@@ -42,7 +42,7 @@ public struct TimerView: View {
             Text("倒计时 · \(countdownModel.phaseLabel)")
                 .font(.headline)
                 .foregroundStyle(FrostTheme.text)
-            Text(countdownModel.remainingText)
+            Text(countdownModel.displayRemainingText)
                 .font(.system(size: 40, weight: .light, design: .monospaced))
                 .monospacedDigit()
                 .foregroundStyle(countdownModel.phase == .rest ? FrostTheme.secondary : FrostTheme.primary)
@@ -53,13 +53,13 @@ public struct TimerView: View {
                     Capsule().fill(FrostTheme.separator)
                     Capsule()
                         .fill(countdownModel.phase == .rest ? FrostTheme.secondary : FrostTheme.primary)
-                        .frame(width: max(3, proxy.size.width * countdownModel.progress))
+                        .frame(width: max(3, proxy.size.width * countdownModel.displayProgress))
                 }
             }
             .frame(height: 4)
             .padding(.horizontal, 4)
 
-            Text("第 \(countdownModel.cyclesCompleted + (countdownModel.phase == .work ? 1 : 0)) 轮专注 · 随时可结束")
+            Text("第 \(countdownModel.cyclesCompleted + (countdownModel.phase == .work ? 1 : 0))/\(countdownModel.totalRounds) 轮专注 · 随时可结束")
                 .font(.caption)
                 .foregroundStyle(FrostTheme.secondaryText)
 

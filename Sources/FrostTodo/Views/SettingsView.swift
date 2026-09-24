@@ -113,10 +113,17 @@ public struct SettingsView: View {
                             try? model.update { $0.countdownRestMinutes = newValue }
                         }
                     ), in: 0...60, step: 1)
+            Stepper("轮数：\(model.settings.countdownRounds) 轮",
+                    value: Binding(
+                        get: { model.settings.countdownRounds },
+                        set: { newValue in
+                            try? model.update { $0.countdownRounds = newValue }
+                        }
+                    ), in: 1...12, step: 1)
         } header: {
             Text("倒计时")
         } footer: {
-            Text("休息时长为 0 表示纯倒计时；倒计时结束时会像正计时一样记录到日历。")
+            Text("休息时长为 0 表示纯倒计时，多轮连续进行并显示总时长（专注时长乘轮数）；倒计时结束时会像正计时一样记录到日历。")
         }
     }
 

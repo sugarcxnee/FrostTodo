@@ -131,7 +131,7 @@ struct CountdownPanelCard: View {
                 .font(.caption)
                 .foregroundStyle(phaseColor)
                 Spacer()
-                Text(model.remainingText)
+                Text(model.displayRemainingText)
                     .font(.system(.title3, design: .monospaced).weight(.medium))
                     .monospacedDigit()
                     .foregroundStyle(FrostTheme.text)
@@ -142,13 +142,13 @@ struct CountdownPanelCard: View {
                     Capsule().fill(FrostTheme.separator)
                     Capsule()
                         .fill(phaseColor)
-                        .frame(width: max(3, proxy.size.width * model.progress))
+                        .frame(width: max(3, proxy.size.width * model.displayProgress))
                 }
             }
             .frame(height: 4)
 
             HStack {
-                Text("倒计时 · 第 \(model.cyclesCompleted + (model.phase == .work ? 1 : 0)) 轮专注")
+                Text("倒计时 · 第 \(model.cyclesCompleted + (model.phase == .work ? 1 : 0))/\(model.totalRounds) 轮专注")
                     .font(.caption2)
                     .foregroundStyle(FrostTheme.secondaryText)
                 Spacer()
@@ -170,7 +170,7 @@ struct CountdownPanelCard: View {
             model.refresh()
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("倒计时\(model.phaseLabel)，剩余 \(model.remainingText)")
+        .accessibilityLabel("倒计时\(model.phaseLabel)，剩余 \(model.displayRemainingText)")
     }
 }
 

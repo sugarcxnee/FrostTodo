@@ -19,6 +19,7 @@ public struct TaskDetailView: View {
     @State private var useCustomCountdown = false
     @State private var countdownWork = 25
     @State private var countdownRest = 5
+    @State private var countdownRounds = 4
     @State private var taskHistory: [HistoryEvent] = []
 
     public var body: some View {
@@ -166,8 +167,19 @@ public struct TaskDetailView: View {
                             .frame(width: 150)
                     }
                 }
+                HStack {
+                    field("轮数") {
+                        Stepper("\(countdownRounds) 轮", value: $countdownRounds, in: 1...12, step: 1)
+                            .frame(width: 150)
+                    }
+                    if countdownRest == 0 {
+                        Text("总时长 \(countdownWork * countdownRounds) 分钟")
+                            .font(.caption)
+                            .foregroundStyle(FrostTheme.secondaryText)
+                    }
+                }
             } else {
-                Text("跟随设置默认：专注 \(Int(app.settingsModel.settings.countdownWorkMinutes)) 分钟，休息 \(app.settingsModel.settings.countdownRestMinutes) 分钟")
+                Text("跟随设置默认：专注 \(app.settingsModel.settings.countdownWorkMinutes) 分钟，休息 \(app.settingsModel.settings.countdownRestMinutes) 分钟，\(app.settingsModel.settings.countdownRounds) 轮")
                     .font(.caption)
                     .foregroundStyle(FrostTheme.secondaryText)
             }
@@ -286,14 +298,16 @@ public struct TaskDetailView: View {
         priority = task.priorityValue
         tagsText = task.tags.joined(separator: ",")
         projectName = task.projectName ?? ""
-        if task.countdownWorkMinutes != nil || task.countdownRestMinutes != nil {
+        if task.countdownWorkMinutes != nil || task.countdownRestMinutes != nil || task.countdownRounds != nil {
             useCustomCountdown = true
-            countdownWork = task.countdownWorkMinutes ?? Int(app.settingsModel.settings.countdownWorkMinutes)
+            countdownWork = task.countdownWorkMinutes ?? app.settingsModel.settings.countdownWorkMinutes
             countdownRest = task.countdownRestMinutes ?? app.settingsModel.settings.countdownRestMinutes
+            countdownRounds = task.countdownRounds ?? app.settingsModel.settings.countdownRounds
         } else {
             useCustomCountdown = false
             countdownWork = app.settingsModel.settings.countdownWorkMinutes
             countdownRest = app.settingsModel.settings.countdownRestMinutes
+            countdownRounds = app.settingsModel.settings.countdownRounds
         }
         taskHistory = (try? app.history.events(matching: HistoryFilter(taskID: task.id, limit: 30))) ?? []
     }
@@ -316,6 +330,7 @@ public struct TaskDetailView: View {
             $0.projectName = project.isEmpty ? nil : project
             $0.countdownWorkMinutes = useCustomCountdown ? countdownWork : nil
             $0.countdownRestMinutes = useCustomCountdown ? countdownRest : nil
+            $0.countdownRounds = useCustomCountdown ? countdownRounds : nil
         }
         try? app.taskList.reload()
         loadState()
