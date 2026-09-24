@@ -64,6 +64,16 @@ public final class CountdownService: ObservableObject {
 
     // MARK: - 操作
 
+    /// 解析任务的生效时长：任务自定义优先，未设置回落设置默认
+    public static func effectiveDurations(
+        for task: TodoTask,
+        settings: AppSettings
+    ) -> (workMinutes: Int, restMinutes: Int) {
+        let work = task.countdownWorkMinutes ?? settings.countdownWorkMinutes
+        let rest = task.countdownRestMinutes ?? settings.countdownRestMinutes
+        return (max(1, work), max(0, rest))
+    }
+
     /// 启动倒计时。若该任务已在正计时中则复用当前 Session。
     public func start(task: TodoTask, workMinutes: Int, restMinutes: Int) throws {
         guard !isActive else { throw CountdownError.alreadyRunning }

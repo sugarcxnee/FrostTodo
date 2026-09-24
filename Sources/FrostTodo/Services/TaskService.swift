@@ -32,7 +32,9 @@ public final class TaskService {
         estimatedMinutes: Int? = nil,
         priority: TaskPriority = .none,
         tags: [String] = [],
-        projectName: String? = nil
+        projectName: String? = nil,
+        countdownWorkMinutes: Int? = nil,
+        countdownRestMinutes: Int? = nil
     ) throws -> TodoTask {
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else {
@@ -49,7 +51,9 @@ public final class TaskService {
             priority: priority.rawValue,
             tags: tags,
             projectName: projectName,
-            sortOrder: maxOrder + 1
+            sortOrder: maxOrder + 1,
+            countdownWorkMinutes: countdownWorkMinutes,
+            countdownRestMinutes: countdownRestMinutes
         )
         persistence.insert(task)
 
@@ -176,6 +180,8 @@ struct TaskFieldSnapshot {
     let priority: Int
     let tags: [String]
     let projectName: String?
+    let countdownWorkMinutes: Int?
+    let countdownRestMinutes: Int?
 
     init(_ task: TodoTask) {
         title = task.title
@@ -186,6 +192,8 @@ struct TaskFieldSnapshot {
         priority = task.priority
         tags = task.tags
         projectName = task.projectName
+        countdownWorkMinutes = task.countdownWorkMinutes
+        countdownRestMinutes = task.countdownRestMinutes
     }
 
     struct Change {
@@ -199,6 +207,10 @@ struct TaskFieldSnapshot {
         case .some(let value): return String(describing: value)
         case .none: return "无"
         }
+    }
+
+    private static func minutes(_ value: Int?) -> String {
+        value.map { "\($0) 分钟" } ?? "跟随默认"
     }
 
     func diff(with task: TodoTask) -> [Change] {
@@ -226,6 +238,12 @@ struct TaskFieldSnapshot {
         }
         if projectName != task.projectName {
             changes.append(Change(name: "项目", oldValue: Self.value(projectName), newValue: Self.value(task.projectName)))
+        }
+        if countdownWorkMinutes != task.countdownWorkMinutes {
+            changes.append(Change(name: "倒计时专注时长", oldValue: Self.minutes(countdownWorkMinutes), newValue: Self.minutes(task.countdownWorkMinutes)))
+        }
+        if countdownRestMinutes != task.countdownRestMinutes {
+            changes.append(Change(name: "倒计时休息时长", oldValue: Self.minutes(countdownRestMinutes), newValue: Self.minutes(task.countdownRestMinutes)))
         }
         return changes
     }

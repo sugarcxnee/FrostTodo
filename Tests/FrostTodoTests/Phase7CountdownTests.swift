@@ -382,3 +382,91 @@ struct Phase7CountdownViewModelTests {
         #expect(viewModel.isActive == false)
     }
 }
+
+// MARK: - 任务级倒计时时长
+
+@MainActor
+@Suite("Phase 7: 任务级倒计时时长")
+struct Phase7TaskCountdownTests {
+
+    private func makeEnvironment() throws -> (CountdownViewModel, CountdownService, TaskService, PersistenceService, ManualClock) {
+        let clock = ManualClock(Date(timeIntervalSince1970: 1_700_000_000))
+        let persistence = try PersistenceService(inMemory: true)
+        let history = HistoryService(persistence: persistence, clock: clock)
+        let tasks = TaskService(persistence: persistence, history: history, clock: clock)
+        let timer = TimerService(persistence: persistence, clock: clock, history: history)
+        let countdown = CountdownService(persistence: persistence, timer: timer, history: history, clock: clock)
+        let viewModel = CountdownViewModel(countdown: countdown, persistence: persistence, clock: clock)
+        return (viewModel, countdown, tasks, persistence, clock)
+    }
+
+    @Test("任务自定义专注与休息时长：启动倒计时优先生效")
+    func taskCustomDurationsTakePrecedence() throws {
+        let (viewModel, countdown, tasks, _, _) = try makeEnvironment()
+        let task = try tasks.create(title: "自定义时长", countdownWorkMinutes: 50, countdownRestMinutes: 0)
+
+        try viewModel.start(task: task)
+
+        #expect(viewModel.isActive)
+        #expect(countdown.remainingSeconds() == 50 * 60)
+        #expect(countdown.restSeconds == 0)
+    }
+
+    @Test("任务未自定义：回落设置默认时长")
+    func fallsBackToSettingsDefaults() throws {
+        let (viewModel, countdown, tasks, _, _) = try makeEnvironment()
+        let task = try tasks.create(title: "默认时长")
+
+        try viewModel.start(task: task)
+
+        #expect(countdown.remainingSeconds() == 25 * 60)
+        #expect(countdown.restSeconds == 5 * 60)
+    }
+
+    @Test("部分自定义：仅专注生效，休息回落默认")
+    func partialOverrideFallsBack() throws {
+        let (viewModel, countdown, tasks, persistence, _) = try makeEnvironment()
+        persistence.settings().countdownRestMinutes = 10
+        try persistence.save()
+        let task = try tasks.create(title: "部分自定义", countdownWorkMinutes: 40)
+
+        try viewModel.start(task: task)
+
+        #expect(countdown.remainingSeconds() == 40 * 60)
+        #expect(countdown.restSeconds == 10 * 60)
+    }
+
+    @Test("设置默认值变更不影响已自定义的任务")
+    func settingsChangeDoesNotAffectCustomTask() throws {
+        let (viewModel, countdown, tasks, persistence, _) = try makeEnvironment()
+        let task = try tasks.create(title: "独立任务", countdownWorkMinutes: 45, countdownRestMinutes: 15)
+        persistence.settings().countdownWorkMinutes = 30
+        persistence.settings().countdownRestMinutes = 30
+        try persistence.save()
+
+        try viewModel.start(task: task)
+
+        #expect(countdown.remainingSeconds() == 45 * 60)
+        #expect(countdown.restSeconds == 15 * 60)
+    }
+
+    @Test("编辑任务倒计时时长：产生 task.updated 历史且 detail 包含字段")
+    func editingDurationsWritesHistory() throws {
+        let (_, _, tasks, persistence, clock) = try makeEnvironment()
+        let history = HistoryService(persistence: persistence, clock: clock)
+        let task = try tasks.create(title: "编辑倒计时时长")
+
+        try tasks.update(task) {
+            $0.countdownWorkMinutes = 45
+            $0.countdownRestMinutes = 10
+        }
+
+        let event = try #require(
+            history.events(matching: HistoryFilter(types: [.taskUpdated], taskID: task.id)).first
+        )
+        #expect(event.detail?.contains("倒计时专注时长") == true)
+        #expect(event.detail?.contains("倒计时休息时长") == true)
+        #expect(event.payload["倒计时专注时长"] == "跟随默认 -> 45 分钟")
+        #expect(event.payload["倒计时休息时长"] == "跟随默认 -> 10 分钟")
+    }
+}

@@ -63,13 +63,16 @@ public final class CountdownViewModel: ObservableObject {
 
     // MARK: - 操作
 
-    /// 按设置中的专注与休息时长启动倒计时
+    /// 启动倒计时：任务自定义时长优先，未设置时用设置默认值
     public func start(task: TodoTask) throws {
-        let settings = persistence.settings()
+        let durations = CountdownService.effectiveDurations(
+            for: task,
+            settings: persistence.settings()
+        )
         try countdown.start(
             task: task,
-            workMinutes: settings.countdownWorkMinutes,
-            restMinutes: settings.countdownRestMinutes
+            workMinutes: durations.workMinutes,
+            restMinutes: durations.restMinutes
         )
         refresh()
     }
