@@ -76,6 +76,13 @@ public struct SidebarView: View {
                     }
                 }
 
+                // 设置固定在今日日程上方，避免日程较长时需要长距离滚动
+                Section {
+                    NavigationLink(value: SidebarSelection.settings) {
+                        Label("设置", systemImage: "gearshape")
+                    }
+                }
+
                 if !app.todaySchedule.isEmpty {
                     Section("今日日程") {
                         ForEach(app.todaySchedule) { event in
@@ -95,12 +102,6 @@ public struct SidebarView: View {
                             }
                             .padding(.vertical, 2)
                         }
-                    }
-                }
-
-                Section {
-                    NavigationLink(value: SidebarSelection.settings) {
-                        Label("设置", systemImage: "gearshape")
                     }
                 }
             }
