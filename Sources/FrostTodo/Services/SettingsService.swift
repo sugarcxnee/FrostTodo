@@ -57,6 +57,7 @@ struct SettingsSnapshot {
     let defaultCalendarID: String?
     let countdownWorkMinutes: Int
     let countdownRestMinutes: Int
+    let countdownRounds: Int
 
     init(_ settings: AppSettings) {
         writeToCalendar = settings.writeToCalendar
@@ -70,6 +71,7 @@ struct SettingsSnapshot {
         defaultCalendarID = settings.defaultCalendarID
         countdownWorkMinutes = settings.countdownWorkMinutes
         countdownRestMinutes = settings.countdownRestMinutes
+        countdownRounds = settings.countdownRounds
     }
 
     struct Change {
@@ -114,6 +116,9 @@ struct SettingsSnapshot {
         }
         if countdownRestMinutes != settings.countdownRestMinutes {
             changes.append(Change(name: "倒计时休息时长", oldValue: "\(countdownRestMinutes) 分钟", newValue: "\(settings.countdownRestMinutes) 分钟"))
+        }
+        if countdownRounds != settings.countdownRounds {
+            changes.append(Change(name: "倒计时轮数", oldValue: "\(countdownRounds) 轮", newValue: "\(settings.countdownRounds) 轮"))
         }
         return changes
     }

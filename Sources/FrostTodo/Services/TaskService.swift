@@ -34,7 +34,8 @@ public final class TaskService {
         tags: [String] = [],
         projectName: String? = nil,
         countdownWorkMinutes: Int? = nil,
-        countdownRestMinutes: Int? = nil
+        countdownRestMinutes: Int? = nil,
+        countdownRounds: Int? = nil
     ) throws -> TodoTask {
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else {
@@ -53,7 +54,8 @@ public final class TaskService {
             projectName: projectName,
             sortOrder: maxOrder + 1,
             countdownWorkMinutes: countdownWorkMinutes,
-            countdownRestMinutes: countdownRestMinutes
+            countdownRestMinutes: countdownRestMinutes,
+            countdownRounds: countdownRounds
         )
         persistence.insert(task)
 
@@ -182,6 +184,7 @@ struct TaskFieldSnapshot {
     let projectName: String?
     let countdownWorkMinutes: Int?
     let countdownRestMinutes: Int?
+    let countdownRounds: Int?
 
     init(_ task: TodoTask) {
         title = task.title
@@ -194,6 +197,7 @@ struct TaskFieldSnapshot {
         projectName = task.projectName
         countdownWorkMinutes = task.countdownWorkMinutes
         countdownRestMinutes = task.countdownRestMinutes
+        countdownRounds = task.countdownRounds
     }
 
     struct Change {
@@ -211,6 +215,10 @@ struct TaskFieldSnapshot {
 
     private static func minutes(_ value: Int?) -> String {
         value.map { "\($0) 分钟" } ?? "跟随默认"
+    }
+
+    private static func rounds(_ value: Int?) -> String {
+        value.map { "\($0) 轮" } ?? "跟随默认"
     }
 
     func diff(with task: TodoTask) -> [Change] {
@@ -244,6 +252,9 @@ struct TaskFieldSnapshot {
         }
         if countdownRestMinutes != task.countdownRestMinutes {
             changes.append(Change(name: "倒计时休息时长", oldValue: Self.minutes(countdownRestMinutes), newValue: Self.minutes(task.countdownRestMinutes)))
+        }
+        if countdownRounds != task.countdownRounds {
+            changes.append(Change(name: "倒计时轮数", oldValue: Self.rounds(countdownRounds), newValue: Self.rounds(task.countdownRounds)))
         }
         return changes
     }

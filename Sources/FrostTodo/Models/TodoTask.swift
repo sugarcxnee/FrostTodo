@@ -49,6 +49,8 @@ public final class TodoTask {
     public var countdownWorkMinutes: Int? = nil
     /// 任务自定义倒计时休息时长（分钟），0 为纯倒计时；nil 表示跟随设置默认
     public var countdownRestMinutes: Int? = nil
+    /// 任务自定义倒计时轮数（专注段个数）；nil 表示跟随设置默认
+    public var countdownRounds: Int? = nil
     @Relationship(deleteRule: .cascade, inverse: \TimeSession.task)
     public var sessions: [TimeSession]
 
@@ -68,7 +70,8 @@ public final class TodoTask {
         completedAt: Date? = nil,
         calendarEventIDs: [String] = [],
         countdownWorkMinutes: Int? = nil,
-        countdownRestMinutes: Int? = nil
+        countdownRestMinutes: Int? = nil,
+        countdownRounds: Int? = nil
     ) {
         self.id = id
         self.title = title
@@ -86,6 +89,7 @@ public final class TodoTask {
         self.calendarEventIDs = calendarEventIDs
         self.countdownWorkMinutes = countdownWorkMinutes
         self.countdownRestMinutes = countdownRestMinutes
+        self.countdownRounds = countdownRounds
         self.sessions = []
     }
 

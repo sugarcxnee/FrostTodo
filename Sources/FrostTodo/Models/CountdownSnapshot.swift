@@ -20,6 +20,8 @@ public final class CountdownSnapshot {
     public var targetEndAt: Date
     public var startedAt: Date?
     public var cyclesCompleted: Int
+    /// 本次倒计时的总轮数（专注段个数）
+    public var totalRounds: Int = 1
     public var updatedAt: Date
 
     public init(
@@ -31,6 +33,7 @@ public final class CountdownSnapshot {
         targetEndAt: Date = .distantPast,
         startedAt: Date? = nil,
         cyclesCompleted: Int = 0,
+        totalRounds: Int = 1,
         updatedAt: Date = Date()
     ) {
         self.id = id
@@ -41,6 +44,7 @@ public final class CountdownSnapshot {
         self.targetEndAt = targetEndAt
         self.startedAt = startedAt
         self.cyclesCompleted = cyclesCompleted
+        self.totalRounds = totalRounds
         self.updatedAt = updatedAt
     }
 

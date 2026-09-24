@@ -35,12 +35,42 @@ public final class CountdownViewModel: ObservableObject {
     /// 已完成的专注轮次
     public var cyclesCompleted: Int { countdown.cyclesCompleted }
 
+    /// 本次倒计时总轮数
+    public var totalRounds: Int { countdown.totalRounds }
+
+    /// 是否为纯倒计时（休息为 0，多轮连续进行）
+    public var isPureCountdown: Bool { countdown.isPureCountdown }
+
     public var remainingSeconds: Int {
         countdown.remainingSeconds(now: now)
     }
 
     public var remainingText: String {
         TimerViewModel.format(seconds: remainingSeconds)
+    }
+
+    /// 剩余专注总时长（跨轮求和，不含休息）
+    public var totalWorkRemainingSeconds: Int {
+        countdown.remainingTotalWorkSeconds(now: now)
+    }
+
+    /// 面板展示的剩余时间：纯倒计时显示专注乘轮数的总时长，否则显示当前阶段
+    public var displayRemainingText: String {
+        TimerViewModel.format(seconds: displayRemainingSeconds)
+    }
+
+    /// 面板展示的剩余秒数
+    public var displayRemainingSeconds: Int {
+        isPureCountdown ? totalWorkRemainingSeconds : remainingSeconds
+    }
+
+    /// 面板展示的进度：纯倒计时按总时长计算
+    public var displayProgress: Double {
+        if isPureCountdown {
+            let total = max(1, countdown.workSeconds * max(1, countdown.totalRounds))
+            return Double(totalWorkRemainingSeconds) / Double(total)
+        }
+        return progress
     }
 
     /// 当前阶段进度：1 为满（刚开始），0 为到点
@@ -63,16 +93,17 @@ public final class CountdownViewModel: ObservableObject {
 
     // MARK: - 操作
 
-    /// 启动倒计时：任务自定义时长优先，未设置时用设置默认值
+    /// 启动倒计时：任务自定义配置优先，未设置项用设置默认值
     public func start(task: TodoTask) throws {
-        let durations = CountdownService.effectiveDurations(
+        let configuration = CountdownService.effectiveConfiguration(
             for: task,
             settings: persistence.settings()
         )
         try countdown.start(
             task: task,
-            workMinutes: durations.workMinutes,
-            restMinutes: durations.restMinutes
+            workMinutes: configuration.workMinutes,
+            restMinutes: configuration.restMinutes,
+            rounds: configuration.rounds
         )
         refresh()
     }

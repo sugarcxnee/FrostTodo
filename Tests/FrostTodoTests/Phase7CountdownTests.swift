@@ -87,7 +87,7 @@ struct Phase7CountdownServiceTests {
     func workToRestTransition() throws {
         let env = try makeEnvironment()
         let task = try env.tasks.create(title: "番茄任务")
-        try env.countdown.start(task: task, workMinutes: 25, restMinutes: 5)
+        try env.countdown.start(task: task, workMinutes: 25, restMinutes: 5, rounds: 4)
 
         env.clock.advance(by: 25 * 60)
         try env.countdown.advanceIfNeeded()
@@ -108,7 +108,7 @@ struct Phase7CountdownServiceTests {
     func restToWorkTransition() throws {
         let env = try makeEnvironment()
         let task = try env.tasks.create(title: "循环任务")
-        try env.countdown.start(task: task, workMinutes: 25, restMinutes: 5)
+        try env.countdown.start(task: task, workMinutes: 25, restMinutes: 5, rounds: 4)
 
         env.clock.advance(by: 25 * 60)
         try env.countdown.advanceIfNeeded() // 专注结束进入休息
@@ -163,7 +163,7 @@ struct Phase7CountdownServiceTests {
     func manualEndDuringRest() throws {
         let env = try makeEnvironment()
         let task = try env.tasks.create(title: "休息中结束")
-        try env.countdown.start(task: task, workMinutes: 25, restMinutes: 5)
+        try env.countdown.start(task: task, workMinutes: 25, restMinutes: 5, rounds: 4)
         env.clock.advance(by: 25 * 60 + 1)
         try env.countdown.advanceIfNeeded()
         #expect(env.countdown.phase == .rest)
@@ -187,7 +187,7 @@ struct Phase7CountdownServiceTests {
     func remainingDecreasesWithoutTransition() throws {
         let env = try makeEnvironment()
         let task = try env.tasks.create(title: "递减")
-        try env.countdown.start(task: task, workMinutes: 10, restMinutes: 5)
+        try env.countdown.start(task: task, workMinutes: 10, restMinutes: 5, rounds: 4)
 
         env.clock.advance(by: 60)
         try env.countdown.advanceIfNeeded()
@@ -222,7 +222,7 @@ struct Phase7CountdownServiceTests {
     func restoreExpiredWorkEntersRest() throws {
         let env = try makeEnvironment()
         let task = try env.tasks.create(title: "过期专注")
-        try env.countdown.start(task: task, workMinutes: 25, restMinutes: 5)
+        try env.countdown.start(task: task, workMinutes: 25, restMinutes: 5, rounds: 4)
         env.clock.advance(by: 30 * 60)
         try env.persistence.save()
 
@@ -298,22 +298,26 @@ struct Phase7CountdownServiceTests {
         let env = try makeEnvironment()
         #expect(env.settings.countdownWorkMinutes == 25)
         #expect(env.settings.countdownRestMinutes == 5)
+        #expect(env.settings.countdownRounds == 4)
 
         let settingsService = SettingsService(persistence: env.persistence, history: env.history, clock: env.clock)
         try settingsService.update {
             $0.countdownWorkMinutes = 50
             $0.countdownRestMinutes = 0
+            $0.countdownRounds = 2
         }
 
         let other = ModelContext(env.persistence.container)
         let reloaded = try #require(other.fetch(FetchDescriptor<AppSettings>()).first)
         #expect(reloaded.countdownWorkMinutes == 50)
         #expect(reloaded.countdownRestMinutes == 0)
+        #expect(reloaded.countdownRounds == 2)
         let changed = try #require(
             env.history.events(matching: HistoryFilter(types: [.settingsChanged])).first
         )
         #expect(changed.detail?.contains("倒计时专注时长") == true)
         #expect(changed.detail?.contains("倒计时休息时长") == true)
+        #expect(changed.detail?.contains("倒计时轮数") == true)
     }
 }
 
@@ -368,6 +372,7 @@ struct Phase7CountdownViewModelTests {
 
         let settings = persistence.settings()
         settings.countdownRestMinutes = 0
+        settings.countdownRounds = 1
         try persistence.save()
 
         let task = try tasks.create(title: "纯倒计时展示")
@@ -468,5 +473,161 @@ struct Phase7TaskCountdownTests {
         #expect(event.detail?.contains("倒计时休息时长") == true)
         #expect(event.payload["倒计时专注时长"] == "跟随默认 -> 45 分钟")
         #expect(event.payload["倒计时休息时长"] == "跟随默认 -> 10 分钟")
+    }
+}
+
+// MARK: - 倒计时轮数
+
+@MainActor
+@Suite("Phase 7: 倒计时轮数")
+struct Phase7CountdownRoundsTests {
+
+    private let epoch = Date(timeIntervalSince1970: 1_700_000_000)
+
+    private func makeEnvironment() throws -> (CountdownService, CountdownViewModel, TaskService, TimerService, PersistenceService, ManualClock) {
+        let clock = ManualClock(epoch)
+        let persistence = try PersistenceService(inMemory: true)
+        let history = HistoryService(persistence: persistence, clock: clock)
+        let tasks = TaskService(persistence: persistence, history: history, clock: clock)
+        let timer = TimerService(persistence: persistence, clock: clock, history: history)
+        let countdown = CountdownService(persistence: persistence, timer: timer, history: history, clock: clock)
+        let viewModel = CountdownViewModel(countdown: countdown, persistence: persistence, clock: clock)
+        return (countdown, viewModel, tasks, timer, persistence, clock)
+    }
+
+    @Test("纯倒计时多轮连续：总时长为专注乘轮数，轮间不切段")
+    func pureCountdownMultipleRounds() throws {
+        let (countdown, _, tasks, timer, _, clock) = try makeEnvironment()
+        let task = try tasks.create(title: "多轮纯倒计时")
+        try countdown.start(task: task, workMinutes: 10, restMinutes: 0, rounds: 3)
+
+        #expect(countdown.remainingTotalWorkSeconds() == 30 * 60)
+
+        clock.advance(by: 10 * 60)
+        try countdown.advanceIfNeeded()
+        #expect(countdown.phase == .work)
+        #expect(countdown.cyclesCompleted == 1)
+        #expect(countdown.remainingTotalWorkSeconds() == 20 * 60)
+        // 休息为 0：轮间不暂停，Session 连续
+        #expect(timer.phase == .running)
+        #expect(task.sessions.count == 1)
+
+        // 按轮边界逐段推进（阶段转换在 tick 时发生）
+        clock.advance(by: 10 * 60)
+        try countdown.advanceIfNeeded()
+        clock.advance(by: 10 * 60)
+        try countdown.advanceIfNeeded()
+        #expect(countdown.phase == .idle)
+        #expect(timer.phase == .idle)
+        #expect(task.sessions.count == 1)
+        #expect(task.sessions.first?.durationSeconds == 30 * 60)
+    }
+
+    @Test("休息模式轮数封顶：最后一轮专注完成后自然结束，不再进入休息")
+    func roundsCapEndsWithoutFinalRest() throws {
+        let (countdown, _, tasks, timer, _, clock) = try makeEnvironment()
+        let task = try tasks.create(title: "两轮番茄")
+        try countdown.start(task: task, workMinutes: 5, restMinutes: 5, rounds: 2)
+
+        clock.advance(by: 5 * 60)
+        try countdown.advanceIfNeeded()
+        #expect(countdown.phase == .rest) // 第 1 轮后正常休息
+
+        clock.advance(by: 5 * 60)
+        try countdown.advanceIfNeeded()
+        #expect(countdown.phase == .work) // 第 2 轮专注
+
+        clock.advance(by: 5 * 60)
+        try countdown.advanceIfNeeded()
+        #expect(countdown.phase == .idle) // 最后一轮完成即结束
+        #expect(countdown.cyclesCompleted == 2)
+        #expect(timer.phase == .idle)
+    }
+
+    @Test("休息中的总剩余包含后续专注段")
+    func totalRemainingDuringRest() throws {
+        let (countdown, _, tasks, _, _, clock) = try makeEnvironment()
+        let task = try tasks.create(title: "总剩余")
+        try countdown.start(task: task, workMinutes: 5, restMinutes: 5, rounds: 2)
+
+        clock.advance(by: 5 * 60)
+        try countdown.advanceIfNeeded() // 进入休息
+        clock.advance(by: 60)
+        #expect(countdown.phase == .rest)
+        // 剩余休息 4 分钟 + 最后一轮专注 5 分钟
+        #expect(countdown.remainingTotalWorkSeconds() == 4 * 60 + 5 * 60)
+    }
+
+    @Test("展示层：休息为 0 显示总时长（专注乘轮数）并按总时长计算进度")
+    func displayShowsTotalForPureCountdown() throws {
+        let (_, viewModel, tasks, _, persistence, clock) = try makeEnvironment()
+        let settings = persistence.settings()
+        settings.countdownWorkMinutes = 25
+        settings.countdownRestMinutes = 0
+        settings.countdownRounds = 2
+        try persistence.save()
+
+        let task = try tasks.create(title: "总时长展示")
+        try viewModel.start(task: task)
+
+        #expect(viewModel.displayRemainingText == "50:00")
+        #expect(abs(viewModel.displayProgress - 1.0) < 0.001)
+
+        clock.advance(by: 10 * 60)
+        viewModel.refresh()
+        #expect(viewModel.displayRemainingText == "40:00")
+        #expect(abs(viewModel.displayProgress - 0.8) < 0.001)
+    }
+
+    @Test("展示层：休息大于 0 时仍显示当前阶段剩余")
+    func displayShowsCurrentPhaseWhenRestEnabled() throws {
+        let (_, viewModel, tasks, _, persistence, clock) = try makeEnvironment()
+        let settings = persistence.settings()
+        settings.countdownWorkMinutes = 25
+        settings.countdownRestMinutes = 5
+        settings.countdownRounds = 4
+        try persistence.save()
+
+        let task = try tasks.create(title: "阶段展示")
+        try viewModel.start(task: task)
+        clock.advance(by: 10 * 60)
+        viewModel.refresh()
+
+        #expect(viewModel.displayRemainingText == "15:00")
+        #expect(abs(viewModel.displayProgress - 0.6) < 0.001)
+    }
+
+    @Test("轮数解析：任务自定义优先，未设置回落设置默认")
+    func roundsResolution() throws {
+        let (_, viewModel, tasks, _, persistence, _) = try makeEnvironment()
+        persistence.settings().countdownRounds = 4
+        try persistence.save()
+
+        let custom = try tasks.create(title: "自定义轮数", countdownRounds: 6)
+        let durations = CountdownService.effectiveConfiguration(for: custom, settings: persistence.settings())
+        #expect(durations.rounds == 6)
+
+        let plain = try tasks.create(title: "默认轮数")
+        let defaults = CountdownService.effectiveConfiguration(for: plain, settings: persistence.settings())
+        #expect(defaults.rounds == 4)
+        #expect(defaults.workMinutes == 25)
+        #expect(defaults.restMinutes == 5)
+
+        _ = try viewModel.start(task: custom)
+    }
+
+    @Test("编辑任务轮数产生 task.updated 历史且 payload 记录变更")
+    func editingRoundsWritesHistory() throws {
+        let (_, _, tasks, _, persistence, clock) = try makeEnvironment()
+        let history = HistoryService(persistence: persistence, clock: clock)
+        let task = try tasks.create(title: "编辑轮数")
+
+        try tasks.update(task) { $0.countdownRounds = 3 }
+
+        let event = try #require(
+            history.events(matching: HistoryFilter(types: [.taskUpdated], taskID: task.id)).first
+        )
+        #expect(event.detail?.contains("倒计时轮数") == true)
+        #expect(event.payload["倒计时轮数"] == "跟随默认 -> 3 轮")
     }
 }

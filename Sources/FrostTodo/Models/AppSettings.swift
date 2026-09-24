@@ -31,6 +31,8 @@ public final class AppSettings {
     public var countdownWorkMinutes: Int = 25
     /// 倒计时休息时长（分钟），0 表示纯倒计时
     public var countdownRestMinutes: Int = 5
+    /// 倒计时默认轮数（专注段个数）
+    public var countdownRounds: Int = 4
 
     public init(
         defaultCalendarID: String? = nil,
@@ -43,7 +45,8 @@ public final class AppSettings {
         historyRetentionDays: Int = 365,
         historyRetentionCount: Int = 10_000,
         countdownWorkMinutes: Int = 25,
-        countdownRestMinutes: Int = 5
+        countdownRestMinutes: Int = 5,
+        countdownRounds: Int = 4
     ) {
         self.defaultCalendarID = defaultCalendarID
         self.writeToCalendar = writeToCalendar
@@ -56,6 +59,7 @@ public final class AppSettings {
         self.historyRetentionCount = historyRetentionCount
         self.countdownWorkMinutes = countdownWorkMinutes
         self.countdownRestMinutes = countdownRestMinutes
+        self.countdownRounds = countdownRounds
     }
 
     public var appearanceValue: AppearanceMode {

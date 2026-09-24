@@ -53,6 +53,12 @@ public final class CountdownService: ObservableObject {
 
     public var restSeconds: Int { snapshot.restSeconds }
 
+    /// 本次倒计时总轮数
+    public var totalRounds: Int { snapshot.totalRounds }
+
+    /// 是否为纯倒计时（休息为 0）
+    public var isPureCountdown: Bool { snapshot.restSeconds == 0 }
+
     public var activeTaskID: UUID? { snapshot.taskID }
 
     /// 当前阶段剩余秒数
@@ -62,20 +68,35 @@ public final class CountdownService: ObservableObject {
         return max(0, Int(snapshot.targetEndAt.timeIntervalSince(reference)))
     }
 
-    // MARK: - 操作
-
-    /// 解析任务的生效时长：任务自定义优先，未设置回落设置默认
-    public static func effectiveDurations(
-        for task: TodoTask,
-        settings: AppSettings
-    ) -> (workMinutes: Int, restMinutes: Int) {
-        let work = task.countdownWorkMinutes ?? settings.countdownWorkMinutes
-        let rest = task.countdownRestMinutes ?? settings.countdownRestMinutes
-        return (max(1, work), max(0, rest))
+    /// 剩余的专注总时长：当前段剩余 + 之后各整段专注（不含休息）
+    public func remainingTotalWorkSeconds(now: Date? = nil) -> Int {
+        guard isActive else { return 0 }
+        let current = remainingSeconds(now: now)
+        let futureRounds: Int
+        if snapshot.phaseValue == .work {
+            futureRounds = max(0, snapshot.totalRounds - snapshot.cyclesCompleted - 1)
+        } else {
+            futureRounds = max(0, snapshot.totalRounds - snapshot.cyclesCompleted)
+        }
+        return current + futureRounds * snapshot.workSeconds
     }
 
-    /// 启动倒计时。若该任务已在正计时中则复用当前 Session。
-    public func start(task: TodoTask, workMinutes: Int, restMinutes: Int) throws {
+    // MARK: - 操作
+
+    /// 解析任务的生效配置：任务自定义优先，未设置项各自回落设置默认
+    public static func effectiveConfiguration(
+        for task: TodoTask,
+        settings: AppSettings
+    ) -> (workMinutes: Int, restMinutes: Int, rounds: Int) {
+        let work = task.countdownWorkMinutes ?? settings.countdownWorkMinutes
+        let rest = task.countdownRestMinutes ?? settings.countdownRestMinutes
+        let rounds = task.countdownRounds ?? settings.countdownRounds
+        return (max(1, work), max(0, rest), max(1, rounds))
+    }
+
+    /// 启动倒计时（rounds 为专注段个数，至少 1）。
+    /// 若该任务已在正计时中则复用当前 Session。
+    public func start(task: TodoTask, workMinutes: Int, restMinutes: Int, rounds: Int = 1) throws {
         guard !isActive else { throw CountdownError.alreadyRunning }
         if !(timer.activeTaskID == task.id && timer.phase == .running) {
             try timer.start(task: task)
@@ -87,6 +108,7 @@ public final class CountdownService: ObservableObject {
         snapshot.phaseValue = .work
         snapshot.workSeconds = workMinutes * 60
         snapshot.restSeconds = max(0, restMinutes) * 60
+        snapshot.totalRounds = max(1, rounds)
         snapshot.targetEndAt = now.addingTimeInterval(TimeInterval(workMinutes * 60))
         snapshot.startedAt = now
         snapshot.cyclesCompleted = 0
@@ -99,6 +121,7 @@ public final class CountdownService: ObservableObject {
                 payload: [
                     "workMinutes": "\(workMinutes)",
                     "restMinutes": "\(restMinutes)",
+                    "rounds": "\(max(1, rounds))",
                 ],
                 source: .user
             ))
@@ -136,6 +159,11 @@ public final class CountdownService: ObservableObject {
                     snapshot.restore(prior)
                     throw error
                 }
+                if snapshot.cyclesCompleted >= snapshot.totalRounds {
+                    // 最后一轮专注完成：自然结束（不再进入休息）
+                    try end(reason: "natural")
+                    return
+                }
                 if snapshot.restSeconds > 0 {
                     if timer.phase == .running {
                         try timer.pause()
@@ -145,9 +173,11 @@ public final class CountdownService: ObservableObject {
                     snapshot.updatedAt = clock.now
                     try persistence.save()
                 } else {
-                    // 纯倒计时：专注到点自然结束
-                    try end(reason: "natural")
-                    return
+                    // 纯倒计时：直接进入下一轮专注，不切段
+                    snapshot.phaseValue = .work
+                    snapshot.targetEndAt = clock.now.addingTimeInterval(TimeInterval(snapshot.workSeconds))
+                    snapshot.updatedAt = clock.now
+                    try persistence.save()
                 }
             case .rest:
                 do {
@@ -202,6 +232,7 @@ public final class CountdownService: ObservableObject {
                     "reason": reason,
                     "remainingSeconds": "\(remaining)",
                     "cyclesCompleted": "\(cycles)",
+                    "totalRounds": "\(snapshot.totalRounds)",
                 ],
                 source: .user
             ))
@@ -232,6 +263,7 @@ struct CountdownStateCapture {
     let targetEndAt: Date
     let startedAt: Date?
     let cyclesCompleted: Int
+    let totalRounds: Int
     let updatedAt: Date
 }
 
@@ -245,6 +277,7 @@ extension CountdownSnapshot {
             targetEndAt: targetEndAt,
             startedAt: startedAt,
             cyclesCompleted: cyclesCompleted,
+            totalRounds: totalRounds,
             updatedAt: updatedAt
         )
     }
@@ -257,6 +290,7 @@ extension CountdownSnapshot {
         targetEndAt = capture.targetEndAt
         startedAt = capture.startedAt
         cyclesCompleted = capture.cyclesCompleted
+        totalRounds = capture.totalRounds
         updatedAt = capture.updatedAt
     }
 }
