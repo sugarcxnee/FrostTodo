@@ -1,23 +1,28 @@
 import SwiftUI
 
-/// 右栏计时器：当前任务、大号用时与操作
+/// 右栏计时器：倒计时状态、当前任务、大号用时与操作
 public struct TimerView: View {
     @ObservedObject private var model: TimerViewModel
+    @ObservedObject private var countdownModel: CountdownViewModel
     private let ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
-    public init(model: TimerViewModel) {
+    public init(model: TimerViewModel, countdownModel: CountdownViewModel) {
         self.model = model
+        self.countdownModel = countdownModel
     }
 
     public var body: some View {
         VStack(spacing: 16) {
+            if countdownModel.isActive {
+                countdownSection
+            }
             if model.isTracking {
                 trackedContent
-            } else {
+            } else if !countdownModel.isActive {
                 ContentUnavailableView(
                     "未在计时",
                     systemImage: "timer",
-                    description: Text("从任务列表选择一个任务开始计时")
+                    description: Text("从任务列表选择一个任务开始计时，或在任务详情启动倒计时")
                 )
             }
         }
@@ -26,8 +31,52 @@ public struct TimerView: View {
         .background(FrostTheme.background)
         .onReceive(ticker) { _ in
             model.refresh()
+            countdownModel.refresh()
         }
     }
+
+    // MARK: - 倒计时
+
+    private var countdownSection: some View {
+        VStack(spacing: 8) {
+            Text("倒计时 · \(countdownModel.phaseLabel)")
+                .font(.headline)
+                .foregroundStyle(FrostTheme.text)
+            Text(countdownModel.remainingText)
+                .font(.system(size: 40, weight: .light, design: .monospaced))
+                .monospacedDigit()
+                .foregroundStyle(countdownModel.phase == .rest ? FrostTheme.secondary : FrostTheme.primary)
+                .contentTransition(.numericText())
+
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(FrostTheme.separator)
+                    Capsule()
+                        .fill(countdownModel.phase == .rest ? FrostTheme.secondary : FrostTheme.primary)
+                        .frame(width: max(3, proxy.size.width * countdownModel.progress))
+                }
+            }
+            .frame(height: 4)
+            .padding(.horizontal, 4)
+
+            Text("第 \(countdownModel.cyclesCompleted + (countdownModel.phase == .work ? 1 : 0)) 轮专注 · 随时可结束")
+                .font(.caption)
+                .foregroundStyle(FrostTheme.secondaryText)
+
+            Button {
+                try? countdownModel.end()
+            } label: {
+                Label("结束倒计时", systemImage: "stop.fill")
+                    .frame(minWidth: 120)
+            }
+            .buttonStyle(.bordered)
+            .tint(FrostTheme.warning)
+        }
+        .padding()
+        .background(FrostTheme.card, in: RoundedRectangle(cornerRadius: 12))
+    }
+
+    // MARK: - 正计时
 
     @ViewBuilder
     private var trackedContent: some View {

@@ -14,6 +14,7 @@
 
 - 任务管理：收件箱、今天、计划、已完成、标签、项目视图；快速添加、编辑、删除、完成与取消完成；手动拖拽排序；搜索与四种排序（手动、创建时间、截止日期、优先级）。
 - 任务计时：开始、暂停、继续、停止、完成；每次开始到结束记录为一个 TimeSession；暂停结束当前时间段、继续开新时间段；跨天计时；应用重启或崩溃后自动恢复计时状态；防重复开始同一任务；切换任务自动结束当前计时。
+- 倒计时（类番茄钟）：可配置专注与休息时长，休息为 0 即纯倒计时；专注到点自动进入休息并结束当段时间（日历更新为计时记录），休息到点自动回到专注（新时间段与日历事件）；随时可手动结束，结束时与正计时一致记录到日历；支持重启恢复；左栏常驻倒计时与正计时面板，菜单栏同步显示倒计时剩余。
 - 历史记录：任务、计时、时间段、日历、设置、通知六类事件全量记录；按类型、任务、日期范围、标签、项目筛选；标题与详情搜索；正序倒序；按天分组；分页加载；导出 JSON 与 CSV；二次确认清空并留痕；按天数或条数的保留策略清理并留痕。
 - 日历联动：计时创建 `[计时中] 任务名` 事件（结束时间取预计时长或默认 15 分钟）；暂停或停止更新结束时间、标题为 `[计时记录] 任务名` 并写入实际时长；任务完成更新为 `[已完成] 任务名` 或创建 `[完成记录] 任务名`（完成时间起 5 分钟止）；事件备注含任务 ID、Session ID、实际时长、状态与备注摘要；事件 URL 为 `frosttodo://task/<任务ID>` 支持回跳；自动创建专用日历 FrostTodo；事件被手动删除时自动重建；权限被拒或无日历时优雅降级，本地功能不受影响；侧边栏展示今日日程（含全天事件）。
 - 菜单栏：常驻显示当前计时任务与已用时间，提供暂停、继续、停止、完成与快速添加。
@@ -32,9 +33,9 @@ FrostTodo/
 │   └── FrostTodo.entitlements     App Sandbox + 日历访问 + 用户选择文件读写
 ├── Sources/FrostTodoApp/          @main 入口、全局快捷键命令、MenuBarExtra
 ├── Sources/FrostTodo/
-│   ├── Models/                    TodoTask、TimeSession、HistoryEvent、AppSettings、TimerSnapshot
+│   ├── Models/                    TodoTask、TimeSession、HistoryEvent、AppSettings、TimerSnapshot、CountdownSnapshot
 │   ├── Protocols/                 ClockProviding、HistoryRecording、CalendarProviding、NotificationCentering、TimerObserving
-│   ├── Services/                  Persistence、Task、Timer、History、CalendarSync、EventKit、Mock、Notification、Settings、ShortcutRouter、Export
+│   ├── Services/                  Persistence、Task、Timer、Countdown、History、CalendarSync、EventKit、Mock、Notification、Settings、ShortcutRouter、Export
 │   ├── ViewModels/                App、TaskList、History、Settings、Timer
 │   └── Views/                     Theme、MainView 三栏、Sidebar、TaskList、TaskDetail、Timer、History、Settings、MenuBar
 └── Tests/FrostTodoTests/          按阶段组织的 16 个测试套件，共 113 例
@@ -78,7 +79,7 @@ swift test
 最近一次结果：
 
 ```
-Test run with 113 tests in 16 suites passed after 0.363 seconds.
+Test run with 134 tests in 19 suites passed after 0.469 seconds.
 ```
 
 各阶段测试文件与用例数：
@@ -91,6 +92,8 @@ Test run with 113 tests in 16 suites passed after 0.363 seconds.
 | 4 日历联动 | Phase4CalendarServiceTests | 16 |
 | 5 UI 与交互 | Phase5ViewModelsTests（四个套件） | 19 |
 | 6 菜单栏通知快捷键导出 | Phase6MenuNotificationShortcutExportTests | 11 |
+| 7 倒计时 | Phase7CountdownTests（两个套件） | 18 |
+| 回归 | RegressionQuickAddPlannedViewTests | 3 |
 
 开发过程严格执行测试门禁：每阶段先写测试（确认红灯）再实现，全部通过后才进入下一阶段；无跳过、无删除测试。
 
@@ -106,7 +109,7 @@ Test run with 113 tests in 16 suites passed after 0.363 seconds.
 
 ## 已知限制
 
-- 未实现番茄钟模式（需求标注为可选，默认不强制）。
+- 倒计时重启恢复为单步追赶：应用关闭期间若跨过多个阶段，恢复时只进入下一阶段并以当前时间重新起算，不回补错过的周期；期间的正计时时长仍完整记录。
 - 数据导出 JSON 暂未提供导入功能；一致性校验通过解码往返完成。
 - 通过 `swift run` 运行时无沙盒与权限描述，日历联动不可用，请使用 Xcode 工程运行。
 - 界面文案为简体中文，未做国际化。
@@ -125,7 +128,7 @@ Test run with 113 tests in 16 suites passed after 0.363 seconds.
 9. 日历权限被拒绝时优雅降级：deniedAccessSkipsSync 等测试。
 10. 冷色调简约界面并支持深色模式：FrostTheme 动态颜色。
 11. 历史可记录、查询、筛选、导出、清理：阶段 3 与 5 测试。
-12. 全部阶段测试通过且有运行记录：113 例全绿，见上。
+12. 全部阶段测试通过且有运行记录：134 例全绿，见上。
 13. 提供 README 与测试：本文档与 Tests 目录。
 14. 全项目无 emoji：已按 Unicode 区段扫描全部源码与文档，结果为空。
 15. 无被跳过或删除的测试：未使用 XCTSkip 或 disabled，测试仅增未减。

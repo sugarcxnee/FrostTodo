@@ -32,6 +32,9 @@ public final class CountdownViewModel: ObservableObject {
 
     public var activeTaskID: UUID? { countdown.activeTaskID }
 
+    /// 已完成的专注轮次
+    public var cyclesCompleted: Int { countdown.cyclesCompleted }
+
     public var remainingSeconds: Int {
         countdown.remainingSeconds(now: now)
     }

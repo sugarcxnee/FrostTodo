@@ -8,6 +8,7 @@ public final class AppViewModel: ObservableObject {
     public let history: HistoryService
     public let tasks: TaskService
     public let timer: TimerService
+    public let countdown: CountdownService
     public let settingsService: SettingsService
     public let notifications: NotificationService
     public let calendarSync: CalendarSyncService
@@ -17,6 +18,7 @@ public final class AppViewModel: ObservableObject {
     public let historyModel: HistoryViewModel
     public let settingsModel: SettingsViewModel
     public let timerModel: TimerViewModel
+    public let countdownModel: CountdownViewModel
 
     @Published public private(set) var calendarAccess: CalendarAccessStatus = .notDetermined
     @Published public private(set) var todaySchedule: [CalendarEventInfo] = []
@@ -35,6 +37,8 @@ public final class AppViewModel: ObservableObject {
         self.tasks = tasks
         let timer = TimerService(persistence: persistence, clock: clock, history: history)
         self.timer = timer
+        let countdown = CountdownService(persistence: persistence, timer: timer, history: history, clock: clock)
+        self.countdown = countdown
         self.settingsService = SettingsService(persistence: persistence, history: history, clock: clock)
         let notificationCenter = notificationCenter ?? UserNotificationCenter()
         self.notifications = NotificationService(
@@ -53,6 +57,7 @@ public final class AppViewModel: ObservableObject {
             settings: settingsService, history: history, persistence: persistence
         )
         self.timerModel = TimerViewModel(timer: timer, clock: clock)
+        self.countdownModel = CountdownViewModel(countdown: countdown, persistence: persistence, clock: clock)
 
         timer.observer = calendarSync
         tasks.timerService = timer

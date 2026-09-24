@@ -10,7 +10,11 @@ public struct MainView: View {
 
     public var body: some View {
         NavigationSplitView {
-            SidebarView(selection: $selection)
+            SidebarView(
+                selection: $selection,
+                timerModel: app.timerModel,
+                countdownModel: app.countdownModel
+            )
         } content: {
             contentColumn
         } detail: {
@@ -39,12 +43,12 @@ public struct MainView: View {
     private var detailColumn: some View {
         switch selection {
         case .history, .settings:
-            TimerView(model: app.timerModel)
+            TimerView(model: app.timerModel, countdownModel: app.countdownModel)
         default:
             if let taskID = selectedTaskID, let task = app.task(byID: taskID) {
                 TaskDetailView(task: task)
             } else {
-                TimerView(model: app.timerModel)
+                TimerView(model: app.timerModel, countdownModel: app.countdownModel)
             }
         }
     }

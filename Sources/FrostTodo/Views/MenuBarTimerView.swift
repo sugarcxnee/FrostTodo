@@ -5,11 +5,13 @@ import AppKit
 public struct MenuBarTimerView: View {
     @EnvironmentObject private var app: AppViewModel
     @ObservedObject private var timerModel: TimerViewModel
+    @ObservedObject private var countdownModel: CountdownViewModel
     @State private var quickAddText = ""
     private let ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
-    public init(timerModel: TimerViewModel) {
+    public init(timerModel: TimerViewModel, countdownModel: CountdownViewModel) {
         self.timerModel = timerModel
+        self.countdownModel = countdownModel
     }
 
     public var body: some View {
@@ -90,20 +92,27 @@ public struct MenuBarTimerView: View {
 /// 菜单栏标签：计时中显示任务与用时
 public struct MenuBarLabelView: View {
     @ObservedObject private var timerModel: TimerViewModel
+    @ObservedObject private var countdownModel: CountdownViewModel
     private let ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
-    public init(timerModel: TimerViewModel) {
+    public init(timerModel: TimerViewModel, countdownModel: CountdownViewModel) {
         self.timerModel = timerModel
+        self.countdownModel = countdownModel
     }
 
     public var body: some View {
-        if timerModel.isTracking {
-            Text("[\(timerModel.elapsedText)] \(timerModel.activeTaskTitle ?? "")")
-                .onReceive(ticker) { _ in
-                    timerModel.refresh()
-                }
-        } else {
-            Image(systemName: "circle.dashed")
+        Group {
+            if countdownModel.isActive {
+                Text("[\(countdownModel.phaseLabel) \(countdownModel.remainingText)]")
+            } else if timerModel.isTracking {
+                Text("[\(timerModel.elapsedText)] \(timerModel.activeTaskTitle ?? "")")
+            } else {
+                Image(systemName: "circle.dashed")
+            }
+        }
+        .onReceive(ticker) { _ in
+            timerModel.refresh()
+            countdownModel.refresh()
         }
     }
 }

@@ -15,6 +15,7 @@ public struct SettingsView: View {
         Form {
             calendarSection
             timingSection
+            countdownSection
             appearanceSection
             historySection
             dataSection
@@ -93,6 +94,29 @@ public struct SettingsView: View {
                             try? model.update { $0.defaultEstimatedMinutes = newValue }
                         }
                     ), in: 5...240, step: 5)
+        }
+    }
+
+    private var countdownSection: some View {
+        Section {
+            Stepper("专注时长：\(model.settings.countdownWorkMinutes) 分钟",
+                    value: Binding(
+                        get: { model.settings.countdownWorkMinutes },
+                        set: { newValue in
+                            try? model.update { $0.countdownWorkMinutes = newValue }
+                        }
+                    ), in: 5...180, step: 5)
+            Stepper("休息时长：\(model.settings.countdownRestMinutes) 分钟",
+                    value: Binding(
+                        get: { model.settings.countdownRestMinutes },
+                        set: { newValue in
+                            try? model.update { $0.countdownRestMinutes = newValue }
+                        }
+                    ), in: 0...60, step: 1)
+        } header: {
+            Text("倒计时")
+        } footer: {
+            Text("休息时长为 0 表示纯倒计时；倒计时结束时会像正计时一样记录到日历。")
         }
     }
 

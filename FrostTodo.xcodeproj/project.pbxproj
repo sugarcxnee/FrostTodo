@@ -12,10 +12,15 @@
 		170895CE36F4AC0F728F8416 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B55D29081A276A548C8C07D /* ExportService.swift */; };
 		1AB766EC294E0BF3118ADC64 /* Phase1SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746CD919FC096D4719956721 /* Phase1SettingsTests.swift */; };
 		2BA402BC40FD846CE838BEEC /* TaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B161365B669B1B50ABD8B0 /* TaskListView.swift */; };
+		2E73F9BCA9D6A8F16E4AFEFA /* CountdownViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49FDB54E462677D62789B278 /* CountdownViewModel.swift */; };
+		322AE415BEDCED71DB11BD5D /* CountdownSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCC0D6380603315E56A32CC /* CountdownSnapshot.swift */; };
 		32ACD8021E44836AB01CDEB3 /* MockCalendarProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47EF034711189C95E03697C /* MockCalendarProvider.swift */; };
 		334BCDD3B410D584BDB7C048 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B9F6FFD5F2C536834E1D69 /* NotificationService.swift */; };
+		3DC5CB965C353F826D1A35A4 /* CountdownService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0FC0C02A8324B23CD634A5B /* CountdownService.swift */; };
+		414F55B45EF45E2527A05549 /* Phase7CountdownTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E382DC1EBDE9BAA021C848E2 /* Phase7CountdownTests.swift */; };
 		432B34D03569F0C7592EA8DF /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F631FDC9551153301873ECC /* TimerView.swift */; };
 		43E1D15F75AFAB50260398C7 /* HistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1DF77B6922B2BD6A22BC16 /* HistoryService.swift */; };
+		477FB847184F4BD8D32A48DF /* RegressionQuickAddPlannedViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1AD6B85CDA81FD7F0C1F96A /* RegressionQuickAddPlannedViewTests.swift */; };
 		4A1DC6B377C60A5879C599A1 /* MenuBarTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5094B990EF4AB0BFB1593A17 /* MenuBarTimerView.swift */; };
 		4DD43117BCE738C2EB7BCD65 /* Phase2TimerServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E8AC1129942608138CAF9D /* Phase2TimerServiceTests.swift */; };
 		52212990341295EB65CC2077 /* TimerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044DA3E4E77A4AA2CFAAA9AA /* TimerViewModel.swift */; };
@@ -80,7 +85,9 @@
 		2F631FDC9551153301873ECC /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		32E58AD12BAEAB02D11A1E59 /* Phase3HistoryServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase3HistoryServiceTests.swift; sourceTree = "<group>"; };
 		3B4CF29504D9ED108D2F417A /* Phase6MenuNotificationShortcutExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase6MenuNotificationShortcutExportTests.swift; sourceTree = "<group>"; };
+		3DCC0D6380603315E56A32CC /* CountdownSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownSnapshot.swift; sourceTree = "<group>"; };
 		455C685CC7304867BFD891D7 /* TaskListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListViewModel.swift; sourceTree = "<group>"; };
+		49FDB54E462677D62789B278 /* CountdownViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownViewModel.swift; sourceTree = "<group>"; };
 		5094B990EF4AB0BFB1593A17 /* MenuBarTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarTimerView.swift; sourceTree = "<group>"; };
 		51B161365B669B1B50ABD8B0 /* TaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListView.swift; sourceTree = "<group>"; };
 		52F950BBE38D69BD94267B69 /* SettingsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsService.swift; sourceTree = "<group>"; };
@@ -106,11 +113,14 @@
 		AD1AFD961660909B185A8483 /* TaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskService.swift; sourceTree = "<group>"; };
 		BBD14B0134E5D50B5B266EBC /* TimerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerService.swift; sourceTree = "<group>"; };
 		BF57844FD123D0E50DB0F503 /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
+		C1AD6B85CDA81FD7F0C1F96A /* RegressionQuickAddPlannedViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegressionQuickAddPlannedViewTests.swift; sourceTree = "<group>"; };
 		C38DD43FD4DEE8072FCF46DA /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		C47EF034711189C95E03697C /* MockCalendarProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCalendarProvider.swift; sourceTree = "<group>"; };
 		D0501A45AF31E6BD0EE83EF2 /* FrostTodoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrostTodoApp.swift; sourceTree = "<group>"; };
+		D0FC0C02A8324B23CD634A5B /* CountdownService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownService.swift; sourceTree = "<group>"; };
 		E0B9F6FFD5F2C536834E1D69 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		E1DEA021EF87469627F2FAFA /* Phase4CalendarServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase4CalendarServiceTests.swift; sourceTree = "<group>"; };
+		E382DC1EBDE9BAA021C848E2 /* Phase7CountdownTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase7CountdownTests.swift; sourceTree = "<group>"; };
 		E3AF1184EF520AE77E8138FE /* Phase3BusinessIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase3BusinessIntegrationTests.swift; sourceTree = "<group>"; };
 		E3E8AC1129942608138CAF9D /* Phase2TimerServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase2TimerServiceTests.swift; sourceTree = "<group>"; };
 		E746E1F26FCB0668E69A3C32 /* ClockProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockProviding.swift; sourceTree = "<group>"; };
@@ -159,6 +169,8 @@
 				E1DEA021EF87469627F2FAFA /* Phase4CalendarServiceTests.swift */,
 				1947E4D112CCA714546A5557 /* Phase5ViewModelsTests.swift */,
 				3B4CF29504D9ED108D2F417A /* Phase6MenuNotificationShortcutExportTests.swift */,
+				E382DC1EBDE9BAA021C848E2 /* Phase7CountdownTests.swift */,
+				C1AD6B85CDA81FD7F0C1F96A /* RegressionQuickAddPlannedViewTests.swift */,
 				DBF10948F821959CB38221D5 /* Support */,
 			);
 			path = FrostTodoTests;
@@ -168,6 +180,7 @@
 			isa = PBXGroup;
 			children = (
 				C38DD43FD4DEE8072FCF46DA /* AppSettings.swift */,
+				3DCC0D6380603315E56A32CC /* CountdownSnapshot.swift */,
 				03331FDFC47D1A929777FA1E /* HistoryEvent.swift */,
 				61CA51816FEFA0F940C613F4 /* TimerSnapshot.swift */,
 				6B0D4F696DA20FBFD084867B /* TimeSession.swift */,
@@ -223,6 +236,7 @@
 			isa = PBXGroup;
 			children = (
 				A13952C96218CCA5147433D4 /* CalendarSyncService.swift */,
+				D0FC0C02A8324B23CD634A5B /* CountdownService.swift */,
 				EC0D7EA723BE2E6F885474E5 /* EventKitCalendarProvider.swift */,
 				0B55D29081A276A548C8C07D /* ExportService.swift */,
 				2D1DF77B6922B2BD6A22BC16 /* HistoryService.swift */,
@@ -241,6 +255,7 @@
 			isa = PBXGroup;
 			children = (
 				EB9020C418E5FD14A68F7C5C /* AppViewModel.swift */,
+				49FDB54E462677D62789B278 /* CountdownViewModel.swift */,
 				2731843AF2548FDD6A42D407 /* HistoryViewModel.swift */,
 				97FDA3533EC3570E632DEEF0 /* SettingsViewModel.swift */,
 				455C685CC7304867BFD891D7 /* TaskListViewModel.swift */,
@@ -352,6 +367,9 @@
 				0C59E82810280C07913890C9 /* CalendarProviding.swift in Sources */,
 				C11E9A1652D9B264BD51D03D /* CalendarSyncService.swift in Sources */,
 				FF9A7B4BC6C7B21C0786636D /* ClockProviding.swift in Sources */,
+				3DC5CB965C353F826D1A35A4 /* CountdownService.swift in Sources */,
+				322AE415BEDCED71DB11BD5D /* CountdownSnapshot.swift in Sources */,
+				2E73F9BCA9D6A8F16E4AFEFA /* CountdownViewModel.swift in Sources */,
 				D523AC3AF3776FCC1DA06A60 /* EventKitCalendarProvider.swift in Sources */,
 				170895CE36F4AC0F728F8416 /* ExportService.swift in Sources */,
 				F6909BB391A4E658543ED35B /* FrostTodoApp.swift in Sources */,
@@ -402,6 +420,8 @@
 				CA8E1CB6D9628F41AC8D4DFA /* Phase4CalendarServiceTests.swift in Sources */,
 				0E22CC648C5E12755F07A8CD /* Phase5ViewModelsTests.swift in Sources */,
 				EC105E81879C695D93EA2AFD /* Phase6MenuNotificationShortcutExportTests.swift in Sources */,
+				414F55B45EF45E2527A05549 /* Phase7CountdownTests.swift in Sources */,
+				477FB847184F4BD8D32A48DF /* RegressionQuickAddPlannedViewTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

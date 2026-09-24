@@ -67,6 +67,14 @@ public struct TaskDetailView: View {
                     .buttonStyle(.borderedProminent)
                     .tint(FrostTheme.primary)
                 }
+                Button {
+                    try? app.countdownModel.start(task: task)
+                } label: {
+                    Label("开始倒计时", systemImage: "hourglass")
+                }
+                .buttonStyle(.bordered)
+                .tint(FrostTheme.secondary)
+                .help("按设置中的专注与休息时长启动倒计时；休息为 0 表示纯倒计时")
             }
             Button {
                 try? app.taskList.toggleComplete(task)

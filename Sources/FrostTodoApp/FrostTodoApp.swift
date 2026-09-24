@@ -24,10 +24,10 @@ struct FrostTodoApp: App {
         }
 
         MenuBarExtra {
-            MenuBarTimerView(timerModel: app.timerModel)
+            MenuBarTimerView(timerModel: app.timerModel, countdownModel: app.countdownModel)
                 .environmentObject(app)
         } label: {
-            MenuBarLabelView(timerModel: app.timerModel)
+            MenuBarLabelView(timerModel: app.timerModel, countdownModel: app.countdownModel)
                 .environmentObject(app)
         }
         .menuBarExtraStyle(.window)
