@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleName</key>
+	<string>FrostTodo</string>
+	<key>CFBundleDisplayName</key>
+	<string>FrostTodo</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>14.0</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>FrostTodo 需要日历权限，用于在计时开始、暂停与任务完成时创建或更新日程事件，留下可追溯的时间记录。</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>FrostTodo 需要日历权限，用于在计时开始、暂停与任务完成时创建或更新日程事件，留下可追溯的时间记录。</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.frosttodo.task</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>frosttodo</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

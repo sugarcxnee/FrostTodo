@@ -1,0 +1,647 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0C59E82810280C07913890C9 /* CalendarProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04622DD535F28558DEB1B1DB /* CalendarProviding.swift */; };
+		0E22CC648C5E12755F07A8CD /* Phase5ViewModelsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1947E4D112CCA714546A5557 /* Phase5ViewModelsTests.swift */; };
+		170895CE36F4AC0F728F8416 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B55D29081A276A548C8C07D /* ExportService.swift */; };
+		1AB766EC294E0BF3118ADC64 /* Phase1SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746CD919FC096D4719956721 /* Phase1SettingsTests.swift */; };
+		2BA402BC40FD846CE838BEEC /* TaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B161365B669B1B50ABD8B0 /* TaskListView.swift */; };
+		32ACD8021E44836AB01CDEB3 /* MockCalendarProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47EF034711189C95E03697C /* MockCalendarProvider.swift */; };
+		334BCDD3B410D584BDB7C048 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B9F6FFD5F2C536834E1D69 /* NotificationService.swift */; };
+		432B34D03569F0C7592EA8DF /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F631FDC9551153301873ECC /* TimerView.swift */; };
+		43E1D15F75AFAB50260398C7 /* HistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1DF77B6922B2BD6A22BC16 /* HistoryService.swift */; };
+		4A1DC6B377C60A5879C599A1 /* MenuBarTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5094B990EF4AB0BFB1593A17 /* MenuBarTimerView.swift */; };
+		4DD43117BCE738C2EB7BCD65 /* Phase2TimerServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E8AC1129942608138CAF9D /* Phase2TimerServiceTests.swift */; };
+		52212990341295EB65CC2077 /* TimerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044DA3E4E77A4AA2CFAAA9AA /* TimerViewModel.swift */; };
+		552A1650A67D6DE07601A105 /* Phase1MigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF94F6B2DCC08655C9F59E9F /* Phase1MigrationTests.swift */; };
+		607E270963C023213D017023 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92196FA95EC0E991170615D7 /* Theme.swift */; };
+		61EC1DBCE4EE000D3EE62DE8 /* Phase3BusinessIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3AF1184EF520AE77E8138FE /* Phase3BusinessIntegrationTests.swift */; };
+		644724DF2D835EF75275A246 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9020C418E5FD14A68F7C5C /* AppViewModel.swift */; };
+		64768439732EDF000B2D1B87 /* Phase3HistoryExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C729A9361808C8EBD9F9B1 /* Phase3HistoryExportTests.swift */; };
+		755BB66C685B6E0ED3A8CF25 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6143DED1C7274DEC5C66CE1B /* HistoryView.swift */; };
+		77B619B1ECD289E80AA8FFE5 /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86C69E575B3BC4D696A5122 /* TaskDetailView.swift */; };
+		7C315FE34D85C9D4BC20B5C7 /* NotificationCentering.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79C84A35FF043B54BCB57A4 /* NotificationCentering.swift */; };
+		877721B71D9F161B1C92442A /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38DD43FD4DEE8072FCF46DA /* AppSettings.swift */; };
+		8C47F9EC22F37CF5B4746C47 /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25EDB6A93C63F1C39A7D72E8 /* PersistenceService.swift */; };
+		8FAFC09B6E36A7B5D00475B8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E52916ABCC39832FEA15B4 /* SettingsView.swift */; };
+		900BB8DD20489462D6B65945 /* TimerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBD14B0134E5D50B5B266EBC /* TimerService.swift */; };
+		90CE69DCCF375B000053EEDB /* TodoTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E70D5CDE6E595E1FC36517B /* TodoTask.swift */; };
+		9399DD3C17F5854961A24126 /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF57844FD123D0E50DB0F503 /* SidebarView.swift */; };
+		9A53B8C6C87AD95AB38010C3 /* TimerObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEDFA8EC8203925225D1B39 /* TimerObserving.swift */; };
+		A5501CABAF47A4C44A1C9307 /* ShortcutRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F208403D3C7DE7FA135348 /* ShortcutRouter.swift */; };
+		A754BD3EAC443A81F35FC5B7 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728921E438BFF8A79AFAEE16 /* MainView.swift */; };
+		A8A53AA97AF3741B036A6EC3 /* SettingsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F950BBE38D69BD94267B69 /* SettingsService.swift */; };
+		AD96BE4AAF047C516582DBA2 /* Phase3HistoryServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E58AD12BAEAB02D11A1E59 /* Phase3HistoryServiceTests.swift */; };
+		B920BA0B2B4BE362134E562A /* HistoryRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D331B91C5662A6115BA439E /* HistoryRecording.swift */; };
+		BB3F3ECDA9A3E61085E6D93E /* TaskListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455C685CC7304867BFD891D7 /* TaskListViewModel.swift */; };
+		BE19B34A149CDEA9CDDC0214 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3E0BB566301D29F3B3D02C4 /* Mocks.swift */; };
+		BF896F3DAC55FEA1CE9B80AB /* Phase1ModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C695A0C2372D023CA367B97 /* Phase1ModelTests.swift */; };
+		C0C22CE4E24692747893614D /* TimerSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CA51816FEFA0F940C613F4 /* TimerSnapshot.swift */; };
+		C11E9A1652D9B264BD51D03D /* CalendarSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13952C96218CCA5147433D4 /* CalendarSyncService.swift */; };
+		CA8E1CB6D9628F41AC8D4DFA /* Phase4CalendarServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEA021EF87469627F2FAFA /* Phase4CalendarServiceTests.swift */; };
+		CB6622A8803E5475C2913724 /* Phase1PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A8259A25C3B4A35AAA1EE /* Phase1PersistenceTests.swift */; };
+		D28F0D569553B570C08C9691 /* TaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1AFD961660909B185A8483 /* TaskService.swift */; };
+		D4D590277198B709E8E5B23B /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2731843AF2548FDD6A42D407 /* HistoryViewModel.swift */; };
+		D523AC3AF3776FCC1DA06A60 /* EventKitCalendarProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D7EA723BE2E6F885474E5 /* EventKitCalendarProvider.swift */; };
+		E2CFC8700FCE64E610727F3C /* HistoryEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03331FDFC47D1A929777FA1E /* HistoryEvent.swift */; };
+		EC105E81879C695D93EA2AFD /* Phase6MenuNotificationShortcutExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4CF29504D9ED108D2F417A /* Phase6MenuNotificationShortcutExportTests.swift */; };
+		F0D32497F62F382C2384B69C /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FDA3533EC3570E632DEEF0 /* SettingsViewModel.swift */; };
+		F67A419854888D3C1367F110 /* TimeSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B0D4F696DA20FBFD084867B /* TimeSession.swift */; };
+		F6909BB391A4E658543ED35B /* FrostTodoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0501A45AF31E6BD0EE83EF2 /* FrostTodoApp.swift */; };
+		FF9A7B4BC6C7B21C0786636D /* ClockProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = E746E1F26FCB0668E69A3C32 /* ClockProviding.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6ED44C60EB3F53C4979F1345 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2E12EC397280F0CA1BF58F5E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B3CF34CA0F138EFDC92FA294;
+			remoteInfo = FrostTodo;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		03331FDFC47D1A929777FA1E /* HistoryEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryEvent.swift; sourceTree = "<group>"; };
+		044DA3E4E77A4AA2CFAAA9AA /* TimerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewModel.swift; sourceTree = "<group>"; };
+		04622DD535F28558DEB1B1DB /* CalendarProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarProviding.swift; sourceTree = "<group>"; };
+		0B55D29081A276A548C8C07D /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
+		1947E4D112CCA714546A5557 /* Phase5ViewModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase5ViewModelsTests.swift; sourceTree = "<group>"; };
+		25EDB6A93C63F1C39A7D72E8 /* PersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
+		2731843AF2548FDD6A42D407 /* HistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
+		290703FAA1BD4ECC83EE5CB1 /* FrostTodoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FrostTodoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D1DF77B6922B2BD6A22BC16 /* HistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryService.swift; sourceTree = "<group>"; };
+		2F631FDC9551153301873ECC /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
+		32E58AD12BAEAB02D11A1E59 /* Phase3HistoryServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase3HistoryServiceTests.swift; sourceTree = "<group>"; };
+		3B4CF29504D9ED108D2F417A /* Phase6MenuNotificationShortcutExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase6MenuNotificationShortcutExportTests.swift; sourceTree = "<group>"; };
+		455C685CC7304867BFD891D7 /* TaskListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListViewModel.swift; sourceTree = "<group>"; };
+		5094B990EF4AB0BFB1593A17 /* MenuBarTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarTimerView.swift; sourceTree = "<group>"; };
+		51B161365B669B1B50ABD8B0 /* TaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListView.swift; sourceTree = "<group>"; };
+		52F950BBE38D69BD94267B69 /* SettingsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsService.swift; sourceTree = "<group>"; };
+		547A8259A25C3B4A35AAA1EE /* Phase1PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase1PersistenceTests.swift; sourceTree = "<group>"; };
+		57F208403D3C7DE7FA135348 /* ShortcutRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutRouter.swift; sourceTree = "<group>"; };
+		6143DED1C7274DEC5C66CE1B /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		61CA51816FEFA0F940C613F4 /* TimerSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSnapshot.swift; sourceTree = "<group>"; };
+		63E52916ABCC39832FEA15B4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		6B0D4F696DA20FBFD084867B /* TimeSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSession.swift; sourceTree = "<group>"; };
+		728921E438BFF8A79AFAEE16 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		746CD919FC096D4719956721 /* Phase1SettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase1SettingsTests.swift; sourceTree = "<group>"; };
+		75C729A9361808C8EBD9F9B1 /* Phase3HistoryExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase3HistoryExportTests.swift; sourceTree = "<group>"; };
+		7C695A0C2372D023CA367B97 /* Phase1ModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase1ModelTests.swift; sourceTree = "<group>"; };
+		7CEDFA8EC8203925225D1B39 /* TimerObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerObserving.swift; sourceTree = "<group>"; };
+		8D331B91C5662A6115BA439E /* HistoryRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryRecording.swift; sourceTree = "<group>"; };
+		92196FA95EC0E991170615D7 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		97FDA3533EC3570E632DEEF0 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		9E70D5CDE6E595E1FC36517B /* TodoTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoTask.swift; sourceTree = "<group>"; };
+		A13952C96218CCA5147433D4 /* CalendarSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSyncService.swift; sourceTree = "<group>"; };
+		A3E0BB566301D29F3B3D02C4 /* Mocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
+		A4651BEEAA3F7E18579FBF5E /* FrostTodo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FrostTodo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A79C84A35FF043B54BCB57A4 /* NotificationCentering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCentering.swift; sourceTree = "<group>"; };
+		AD1AFD961660909B185A8483 /* TaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskService.swift; sourceTree = "<group>"; };
+		BBD14B0134E5D50B5B266EBC /* TimerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerService.swift; sourceTree = "<group>"; };
+		BF57844FD123D0E50DB0F503 /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
+		C38DD43FD4DEE8072FCF46DA /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		C47EF034711189C95E03697C /* MockCalendarProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCalendarProvider.swift; sourceTree = "<group>"; };
+		D0501A45AF31E6BD0EE83EF2 /* FrostTodoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrostTodoApp.swift; sourceTree = "<group>"; };
+		E0B9F6FFD5F2C536834E1D69 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		E1DEA021EF87469627F2FAFA /* Phase4CalendarServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase4CalendarServiceTests.swift; sourceTree = "<group>"; };
+		E3AF1184EF520AE77E8138FE /* Phase3BusinessIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase3BusinessIntegrationTests.swift; sourceTree = "<group>"; };
+		E3E8AC1129942608138CAF9D /* Phase2TimerServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase2TimerServiceTests.swift; sourceTree = "<group>"; };
+		E746E1F26FCB0668E69A3C32 /* ClockProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockProviding.swift; sourceTree = "<group>"; };
+		EB9020C418E5FD14A68F7C5C /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
+		EC0D7EA723BE2E6F885474E5 /* EventKitCalendarProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventKitCalendarProvider.swift; sourceTree = "<group>"; };
+		F86C69E575B3BC4D696A5122 /* TaskDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailView.swift; sourceTree = "<group>"; };
+		FF94F6B2DCC08655C9F59E9F /* Phase1MigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase1MigrationTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		1C0E342C937AF910305001DC /* FrostTodo */ = {
+			isa = PBXGroup;
+			children = (
+				5317AA1D64AD6A953EEC6FF0 /* Models */,
+				2980705F508FF0EDE6A12D7E /* Protocols */,
+				CB8D7E1DBE0A8260C9E7FC2F /* Services */,
+				DA059C0E023B3D9C7B9F1B08 /* ViewModels */,
+				E45DC1932DDEA437907E383B /* Views */,
+			);
+			path = FrostTodo;
+			sourceTree = "<group>";
+		};
+		2980705F508FF0EDE6A12D7E /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				04622DD535F28558DEB1B1DB /* CalendarProviding.swift */,
+				E746E1F26FCB0668E69A3C32 /* ClockProviding.swift */,
+				8D331B91C5662A6115BA439E /* HistoryRecording.swift */,
+				A79C84A35FF043B54BCB57A4 /* NotificationCentering.swift */,
+				7CEDFA8EC8203925225D1B39 /* TimerObserving.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		2B7BDC13DF3031E04D3C7930 /* FrostTodoTests */ = {
+			isa = PBXGroup;
+			children = (
+				FF94F6B2DCC08655C9F59E9F /* Phase1MigrationTests.swift */,
+				7C695A0C2372D023CA367B97 /* Phase1ModelTests.swift */,
+				547A8259A25C3B4A35AAA1EE /* Phase1PersistenceTests.swift */,
+				746CD919FC096D4719956721 /* Phase1SettingsTests.swift */,
+				E3E8AC1129942608138CAF9D /* Phase2TimerServiceTests.swift */,
+				E3AF1184EF520AE77E8138FE /* Phase3BusinessIntegrationTests.swift */,
+				75C729A9361808C8EBD9F9B1 /* Phase3HistoryExportTests.swift */,
+				32E58AD12BAEAB02D11A1E59 /* Phase3HistoryServiceTests.swift */,
+				E1DEA021EF87469627F2FAFA /* Phase4CalendarServiceTests.swift */,
+				1947E4D112CCA714546A5557 /* Phase5ViewModelsTests.swift */,
+				3B4CF29504D9ED108D2F417A /* Phase6MenuNotificationShortcutExportTests.swift */,
+				DBF10948F821959CB38221D5 /* Support */,
+			);
+			path = FrostTodoTests;
+			sourceTree = "<group>";
+		};
+		5317AA1D64AD6A953EEC6FF0 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C38DD43FD4DEE8072FCF46DA /* AppSettings.swift */,
+				03331FDFC47D1A929777FA1E /* HistoryEvent.swift */,
+				61CA51816FEFA0F940C613F4 /* TimerSnapshot.swift */,
+				6B0D4F696DA20FBFD084867B /* TimeSession.swift */,
+				9E70D5CDE6E595E1FC36517B /* TodoTask.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		5523A57A23743604DE5679CC /* FrostTodoApp */ = {
+			isa = PBXGroup;
+			children = (
+				D0501A45AF31E6BD0EE83EF2 /* FrostTodoApp.swift */,
+			);
+			path = FrostTodoApp;
+			sourceTree = "<group>";
+		};
+		7E4A61E70901C8722904529C /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				1C0E342C937AF910305001DC /* FrostTodo */,
+				5523A57A23743604DE5679CC /* FrostTodoApp */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		9D0F4E1E351B7E149A36E6B8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A4651BEEAA3F7E18579FBF5E /* FrostTodo.app */,
+				290703FAA1BD4ECC83EE5CB1 /* FrostTodoTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A9741D728C37ECD147316D15 = {
+			isa = PBXGroup;
+			children = (
+				7E4A61E70901C8722904529C /* Sources */,
+				B41965F2A95B6F49555A3C5F /* Tests */,
+				9D0F4E1E351B7E149A36E6B8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B41965F2A95B6F49555A3C5F /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				2B7BDC13DF3031E04D3C7930 /* FrostTodoTests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		CB8D7E1DBE0A8260C9E7FC2F /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A13952C96218CCA5147433D4 /* CalendarSyncService.swift */,
+				EC0D7EA723BE2E6F885474E5 /* EventKitCalendarProvider.swift */,
+				0B55D29081A276A548C8C07D /* ExportService.swift */,
+				2D1DF77B6922B2BD6A22BC16 /* HistoryService.swift */,
+				C47EF034711189C95E03697C /* MockCalendarProvider.swift */,
+				E0B9F6FFD5F2C536834E1D69 /* NotificationService.swift */,
+				25EDB6A93C63F1C39A7D72E8 /* PersistenceService.swift */,
+				52F950BBE38D69BD94267B69 /* SettingsService.swift */,
+				57F208403D3C7DE7FA135348 /* ShortcutRouter.swift */,
+				AD1AFD961660909B185A8483 /* TaskService.swift */,
+				BBD14B0134E5D50B5B266EBC /* TimerService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		DA059C0E023B3D9C7B9F1B08 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				EB9020C418E5FD14A68F7C5C /* AppViewModel.swift */,
+				2731843AF2548FDD6A42D407 /* HistoryViewModel.swift */,
+				97FDA3533EC3570E632DEEF0 /* SettingsViewModel.swift */,
+				455C685CC7304867BFD891D7 /* TaskListViewModel.swift */,
+				044DA3E4E77A4AA2CFAAA9AA /* TimerViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		DBF10948F821959CB38221D5 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				A3E0BB566301D29F3B3D02C4 /* Mocks.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		E45DC1932DDEA437907E383B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6143DED1C7274DEC5C66CE1B /* HistoryView.swift */,
+				728921E438BFF8A79AFAEE16 /* MainView.swift */,
+				5094B990EF4AB0BFB1593A17 /* MenuBarTimerView.swift */,
+				63E52916ABCC39832FEA15B4 /* SettingsView.swift */,
+				BF57844FD123D0E50DB0F503 /* SidebarView.swift */,
+				F86C69E575B3BC4D696A5122 /* TaskDetailView.swift */,
+				51B161365B669B1B50ABD8B0 /* TaskListView.swift */,
+				92196FA95EC0E991170615D7 /* Theme.swift */,
+				2F631FDC9551153301873ECC /* TimerView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4F91DE692D6F7B5CF3FCC64A /* FrostTodoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7C3ADF02A58DEE4837C8BAE7 /* Build configuration list for PBXNativeTarget "FrostTodoTests" */;
+			buildPhases = (
+				FEEAC0B64432F5EBA75EA2DB /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				94F94ADE0C8B9AF5730E2F1D /* PBXTargetDependency */,
+			);
+			name = FrostTodoTests;
+			packageProductDependencies = (
+			);
+			productName = FrostTodoTests;
+			productReference = 290703FAA1BD4ECC83EE5CB1 /* FrostTodoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		B3CF34CA0F138EFDC92FA294 /* FrostTodo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 61DDD7FF8BF50069F41CD4D0 /* Build configuration list for PBXNativeTarget "FrostTodo" */;
+			buildPhases = (
+				9B493009C418AEDBEFE0D192 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FrostTodo;
+			packageProductDependencies = (
+			);
+			productName = FrostTodo;
+			productReference = A4651BEEAA3F7E18579FBF5E /* FrostTodo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2E12EC397280F0CA1BF58F5E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = E496BD4DA9DB2C357DA8B223 /* Build configuration list for PBXProject "FrostTodo" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = A9741D728C37ECD147316D15;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 9D0F4E1E351B7E149A36E6B8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B3CF34CA0F138EFDC92FA294 /* FrostTodo */,
+				4F91DE692D6F7B5CF3FCC64A /* FrostTodoTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9B493009C418AEDBEFE0D192 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				877721B71D9F161B1C92442A /* AppSettings.swift in Sources */,
+				644724DF2D835EF75275A246 /* AppViewModel.swift in Sources */,
+				0C59E82810280C07913890C9 /* CalendarProviding.swift in Sources */,
+				C11E9A1652D9B264BD51D03D /* CalendarSyncService.swift in Sources */,
+				FF9A7B4BC6C7B21C0786636D /* ClockProviding.swift in Sources */,
+				D523AC3AF3776FCC1DA06A60 /* EventKitCalendarProvider.swift in Sources */,
+				170895CE36F4AC0F728F8416 /* ExportService.swift in Sources */,
+				F6909BB391A4E658543ED35B /* FrostTodoApp.swift in Sources */,
+				E2CFC8700FCE64E610727F3C /* HistoryEvent.swift in Sources */,
+				B920BA0B2B4BE362134E562A /* HistoryRecording.swift in Sources */,
+				43E1D15F75AFAB50260398C7 /* HistoryService.swift in Sources */,
+				755BB66C685B6E0ED3A8CF25 /* HistoryView.swift in Sources */,
+				D4D590277198B709E8E5B23B /* HistoryViewModel.swift in Sources */,
+				A754BD3EAC443A81F35FC5B7 /* MainView.swift in Sources */,
+				4A1DC6B377C60A5879C599A1 /* MenuBarTimerView.swift in Sources */,
+				32ACD8021E44836AB01CDEB3 /* MockCalendarProvider.swift in Sources */,
+				7C315FE34D85C9D4BC20B5C7 /* NotificationCentering.swift in Sources */,
+				334BCDD3B410D584BDB7C048 /* NotificationService.swift in Sources */,
+				8C47F9EC22F37CF5B4746C47 /* PersistenceService.swift in Sources */,
+				A8A53AA97AF3741B036A6EC3 /* SettingsService.swift in Sources */,
+				8FAFC09B6E36A7B5D00475B8 /* SettingsView.swift in Sources */,
+				F0D32497F62F382C2384B69C /* SettingsViewModel.swift in Sources */,
+				A5501CABAF47A4C44A1C9307 /* ShortcutRouter.swift in Sources */,
+				9399DD3C17F5854961A24126 /* SidebarView.swift in Sources */,
+				77B619B1ECD289E80AA8FFE5 /* TaskDetailView.swift in Sources */,
+				2BA402BC40FD846CE838BEEC /* TaskListView.swift in Sources */,
+				BB3F3ECDA9A3E61085E6D93E /* TaskListViewModel.swift in Sources */,
+				D28F0D569553B570C08C9691 /* TaskService.swift in Sources */,
+				607E270963C023213D017023 /* Theme.swift in Sources */,
+				F67A419854888D3C1367F110 /* TimeSession.swift in Sources */,
+				9A53B8C6C87AD95AB38010C3 /* TimerObserving.swift in Sources */,
+				900BB8DD20489462D6B65945 /* TimerService.swift in Sources */,
+				C0C22CE4E24692747893614D /* TimerSnapshot.swift in Sources */,
+				432B34D03569F0C7592EA8DF /* TimerView.swift in Sources */,
+				52212990341295EB65CC2077 /* TimerViewModel.swift in Sources */,
+				90CE69DCCF375B000053EEDB /* TodoTask.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FEEAC0B64432F5EBA75EA2DB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE19B34A149CDEA9CDDC0214 /* Mocks.swift in Sources */,
+				552A1650A67D6DE07601A105 /* Phase1MigrationTests.swift in Sources */,
+				BF896F3DAC55FEA1CE9B80AB /* Phase1ModelTests.swift in Sources */,
+				CB6622A8803E5475C2913724 /* Phase1PersistenceTests.swift in Sources */,
+				1AB766EC294E0BF3118ADC64 /* Phase1SettingsTests.swift in Sources */,
+				4DD43117BCE738C2EB7BCD65 /* Phase2TimerServiceTests.swift in Sources */,
+				61EC1DBCE4EE000D3EE62DE8 /* Phase3BusinessIntegrationTests.swift in Sources */,
+				64768439732EDF000B2D1B87 /* Phase3HistoryExportTests.swift in Sources */,
+				AD96BE4AAF047C516582DBA2 /* Phase3HistoryServiceTests.swift in Sources */,
+				CA8E1CB6D9628F41AC8D4DFA /* Phase4CalendarServiceTests.swift in Sources */,
+				0E22CC648C5E12755F07A8CD /* Phase5ViewModelsTests.swift in Sources */,
+				EC105E81879C695D93EA2AFD /* Phase6MenuNotificationShortcutExportTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		94F94ADE0C8B9AF5730E2F1D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B3CF34CA0F138EFDC92FA294 /* FrostTodo */;
+			targetProxy = 6ED44C60EB3F53C4979F1345 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		01747505555AFEBBFC2EBBC4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.frosttodo.FrostTodoTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FrostTodo.app/Contents/MacOS/FrostTodo";
+			};
+			name = Release;
+		};
+		0606D067CE918476E8EF92A7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		39BCB5595B1EACEE46031B1E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Support/FrostTodo.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Support/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.frosttodo.app;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		CC9403C768639091D4E046F0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		E77AE88926FCAE2B71E71DCF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.frosttodo.FrostTodoTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FrostTodo.app/Contents/MacOS/FrostTodo";
+			};
+			name = Debug;
+		};
+		F46E2EB9657F607AC21030BB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Support/FrostTodo.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Support/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.frosttodo.app;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		61DDD7FF8BF50069F41CD4D0 /* Build configuration list for PBXNativeTarget "FrostTodo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				39BCB5595B1EACEE46031B1E /* Debug */,
+				F46E2EB9657F607AC21030BB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7C3ADF02A58DEE4837C8BAE7 /* Build configuration list for PBXNativeTarget "FrostTodoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E77AE88926FCAE2B71E71DCF /* Debug */,
+				01747505555AFEBBFC2EBBC4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E496BD4DA9DB2C357DA8B223 /* Build configuration list for PBXProject "FrostTodo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC9403C768639091D4E046F0 /* Debug */,
+				0606D067CE918476E8EF92A7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2E12EC397280F0CA1BF58F5E /* Project object */;
+}

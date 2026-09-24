@@ -1,0 +1,50 @@
+name: FrostTodo
+options:
+  bundleIdPrefix: com.frosttodo
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  FrostTodo:
+    type: application
+    platform: macOS
+    sources:
+      - Sources/FrostTodo
+      - Sources/FrostTodoApp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.frosttodo.app
+        INFOPLIST_FILE: Support/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Support/FrostTodo.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
+        GENERATE_INFOPLIST_FILE: NO
+        ENABLE_USER_SCRIPT_SANDBOXING: YES
+  FrostTodoTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - Tests/FrostTodoTests
+    dependencies:
+      - target: FrostTodo
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/FrostTodo.app/Contents/MacOS/FrostTodo"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+schemes:
+  FrostTodo:
+    build:
+      targets:
+        FrostTodo: all
+        FrostTodoTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - FrostTodoTests
