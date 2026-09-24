@@ -16,6 +16,9 @@ public struct TaskDetailView: View {
     @State private var priority: TaskPriority = .none
     @State private var tagsText = ""
     @State private var projectName = ""
+    @State private var useCustomCountdown = false
+    @State private var countdownWork = 25
+    @State private var countdownRest = 5
     @State private var taskHistory: [HistoryEvent] = []
 
     public var body: some View {
@@ -74,7 +77,7 @@ public struct TaskDetailView: View {
                 }
                 .buttonStyle(.bordered)
                 .tint(FrostTheme.secondary)
-                .help("按设置中的专注与休息时长启动倒计时；休息为 0 表示纯倒计时")
+                .help("优先使用本任务自定义时长，未自定义时用设置默认；休息为 0 表示纯倒计时")
             }
             Button {
                 try? app.taskList.toggleComplete(task)
@@ -136,6 +139,8 @@ public struct TaskDetailView: View {
                     TextField("项目名", text: $projectName)
                 }
             }
+            countdownSection
+
             HStack {
                 Spacer()
                 Button("保存修改") { saveChanges() }
@@ -145,6 +150,30 @@ public struct TaskDetailView: View {
         }
         .padding()
         .background(FrostTheme.card, in: RoundedRectangle(cornerRadius: 12))
+    }
+
+    private var countdownSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Toggle("自定义倒计时时长", isOn: $useCustomCountdown)
+            if useCustomCountdown {
+                HStack {
+                    field("专注时长") {
+                        Stepper("\(countdownWork) 分钟", value: $countdownWork, in: 5...180, step: 5)
+                            .frame(width: 150)
+                    }
+                    field("休息时长（0 为纯倒计时）") {
+                        Stepper("\(countdownRest) 分钟", value: $countdownRest, in: 0...60, step: 1)
+                            .frame(width: 150)
+                    }
+                }
+            } else {
+                Text("跟随设置默认：专注 \(Int(app.settingsModel.settings.countdownWorkMinutes)) 分钟，休息 \(app.settingsModel.settings.countdownRestMinutes) 分钟")
+                    .font(.caption)
+                    .foregroundStyle(FrostTheme.secondaryText)
+            }
+        }
+        .padding(10)
+        .background(FrostTheme.background.opacity(0.5), in: RoundedRectangle(cornerRadius: 8))
     }
 
     private var sessionsCard: some View {
@@ -257,6 +286,15 @@ public struct TaskDetailView: View {
         priority = task.priorityValue
         tagsText = task.tags.joined(separator: ",")
         projectName = task.projectName ?? ""
+        if task.countdownWorkMinutes != nil || task.countdownRestMinutes != nil {
+            useCustomCountdown = true
+            countdownWork = task.countdownWorkMinutes ?? Int(app.settingsModel.settings.countdownWorkMinutes)
+            countdownRest = task.countdownRestMinutes ?? app.settingsModel.settings.countdownRestMinutes
+        } else {
+            useCustomCountdown = false
+            countdownWork = app.settingsModel.settings.countdownWorkMinutes
+            countdownRest = app.settingsModel.settings.countdownRestMinutes
+        }
         taskHistory = (try? app.history.events(matching: HistoryFilter(taskID: task.id, limit: 30))) ?? []
     }
 
@@ -276,6 +314,8 @@ public struct TaskDetailView: View {
             $0.priorityValue = priority
             $0.tags = tags
             $0.projectName = project.isEmpty ? nil : project
+            $0.countdownWorkMinutes = useCustomCountdown ? countdownWork : nil
+            $0.countdownRestMinutes = useCustomCountdown ? countdownRest : nil
         }
         try? app.taskList.reload()
         loadState()
