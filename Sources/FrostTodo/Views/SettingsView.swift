@@ -3,8 +3,13 @@ import SwiftUI
 /// 中栏：设置（日历、通知、外观、历史保留、数据管理）
 public struct SettingsView: View {
     @EnvironmentObject private var app: AppViewModel
+    @ObservedObject private var model: SettingsViewModel
     @State private var showClearHistoryConfirmation = false
     @State private var showClearCompletedConfirmation = false
+
+    public init(model: SettingsViewModel) {
+        self.model = model
+    }
 
     public var body: some View {
         Form {
@@ -19,14 +24,14 @@ public struct SettingsView: View {
         .navigationTitle("设置")
         .confirmationDialog("确认清空全部历史记录？", isPresented: $showClearHistoryConfirmation, titleVisibility: .visible) {
             Button("清空历史", role: .destructive) {
-                try? app.settingsModel.clearHistory()
+                try? model.clearHistory()
                 try? app.historyModel.reload()
             }
             Button("取消", role: .cancel) {}
         }
         .confirmationDialog("确认删除全部已完成任务？", isPresented: $showClearCompletedConfirmation, titleVisibility: .visible) {
             Button("删除已完成任务", role: .destructive) {
-                _ = try? app.settingsModel.clearCompletedTasks()
+                _ = try? model.clearCompletedTasks()
                 try? app.taskList.reload()
             }
             Button("取消", role: .cancel) {}
@@ -40,9 +45,9 @@ public struct SettingsView: View {
             toggleRow("任务完成时创建完成事件", keyPath: \.createCompletionEvent)
 
             Picker("默认日历", selection: Binding(
-                get: { app.settingsModel.settings.defaultCalendarID ?? "" },
+                get: { model.settings.defaultCalendarID ?? "" },
                 set: { newValue in
-                    try? app.settingsModel.update { $0.defaultCalendarID = newValue.isEmpty ? nil : newValue }
+                    try? model.update { $0.defaultCalendarID = newValue.isEmpty ? nil : newValue }
                 }
             )) {
                 Text("自动（FrostTodo 专用日历）").tag("")
@@ -81,11 +86,11 @@ public struct SettingsView: View {
 
     private var timingSection: some View {
         Section("计时") {
-            Stepper("默认预计时长：\(app.settingsModel.settings.defaultEstimatedMinutes) 分钟",
+            Stepper("默认预计时长：\(model.settings.defaultEstimatedMinutes) 分钟",
                     value: Binding(
-                        get: { app.settingsModel.settings.defaultEstimatedMinutes },
+                        get: { model.settings.defaultEstimatedMinutes },
                         set: { newValue in
-                            try? app.settingsModel.update { $0.defaultEstimatedMinutes = newValue }
+                            try? model.update { $0.defaultEstimatedMinutes = newValue }
                         }
                     ), in: 5...240, step: 5)
         }
@@ -94,9 +99,9 @@ public struct SettingsView: View {
     private var appearanceSection: some View {
         Section("外观") {
             Picker("模式", selection: Binding(
-                get: { app.settingsModel.settings.appearanceValue },
+                get: { model.settings.appearanceValue },
                 set: { newValue in
-                    try? app.settingsModel.update { $0.appearanceValue = newValue }
+                    try? model.update { $0.appearanceValue = newValue }
                 }
             )) {
                 Text("跟随系统").tag(AppearanceMode.system)
@@ -110,9 +115,9 @@ public struct SettingsView: View {
     private var historySection: some View {
         Section("历史记录") {
             Picker("保留策略", selection: Binding(
-                get: { app.settingsModel.settings.historyRetentionPolicyValue },
+                get: { model.settings.historyRetentionPolicyValue },
                 set: { newValue in
-                    try? app.settingsModel.update { $0.historyRetentionPolicyValue = newValue }
+                    try? model.update { $0.historyRetentionPolicyValue = newValue }
                 }
             )) {
                 Text("永久").tag(HistoryRetentionPolicy.forever)
@@ -120,27 +125,27 @@ public struct SettingsView: View {
                 Text("按条数").tag(HistoryRetentionPolicy.byCount)
             }
 
-            if app.settingsModel.settings.historyRetentionPolicyValue == .byDays {
-                Stepper("保留 \(app.settingsModel.settings.historyRetentionDays) 天",
+            if model.settings.historyRetentionPolicyValue == .byDays {
+                Stepper("保留 \(model.settings.historyRetentionDays) 天",
                         value: Binding(
-                            get: { app.settingsModel.settings.historyRetentionDays },
+                            get: { model.settings.historyRetentionDays },
                             set: { newValue in
-                                try? app.settingsModel.update { $0.historyRetentionDays = newValue }
+                                try? model.update { $0.historyRetentionDays = newValue }
                             }
                         ), in: 7...730, step: 1)
             }
-            if app.settingsModel.settings.historyRetentionPolicyValue == .byCount {
-                Stepper("保留 \(app.settingsModel.settings.historyRetentionCount) 条",
+            if model.settings.historyRetentionPolicyValue == .byCount {
+                Stepper("保留 \(model.settings.historyRetentionCount) 条",
                         value: Binding(
-                            get: { app.settingsModel.settings.historyRetentionCount },
+                            get: { model.settings.historyRetentionCount },
                             set: { newValue in
-                                try? app.settingsModel.update { $0.historyRetentionCount = newValue }
+                                try? model.update { $0.historyRetentionCount = newValue }
                             }
                         ), in: 100...100_000, step: 100)
             }
 
             Button("立即应用保留策略") {
-                _ = try? app.settingsModel.applyRetentionPolicy()
+                _ = try? model.applyRetentionPolicy()
                 try? app.historyModel.reload()
             }
         }
@@ -166,9 +171,9 @@ public struct SettingsView: View {
 
     private func toggleRow(_ title: String, keyPath: ReferenceWritableKeyPath<AppSettings, Bool>) -> some View {
         Toggle(title, isOn: Binding(
-            get: { app.settingsModel.settings[keyPath: keyPath] },
+            get: { model.settings[keyPath: keyPath] },
             set: { newValue in
-                try? app.settingsModel.update { $0[keyPath: keyPath] = newValue }
+                try? model.update { $0[keyPath: keyPath] = newValue }
             }
         ))
     }

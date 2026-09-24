@@ -2,12 +2,16 @@ import SwiftUI
 
 /// 右栏计时器：当前任务、大号用时与操作
 public struct TimerView: View {
-    @EnvironmentObject private var app: AppViewModel
+    @ObservedObject private var model: TimerViewModel
     private let ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+
+    public init(model: TimerViewModel) {
+        self.model = model
+    }
 
     public var body: some View {
         VStack(spacing: 16) {
-            if app.timerModel.isTracking {
+            if model.isTracking {
                 trackedContent
             } else {
                 ContentUnavailableView(
@@ -21,17 +25,17 @@ public struct TimerView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(FrostTheme.background)
         .onReceive(ticker) { _ in
-            app.timerModel.refresh()
+            model.refresh()
         }
     }
 
     @ViewBuilder
     private var trackedContent: some View {
         VStack(spacing: 8) {
-            Text(app.timerModel.activeTaskTitle ?? "")
+            Text(model.activeTaskTitle ?? "")
                 .font(.headline)
                 .foregroundStyle(FrostTheme.text)
-            Text(app.timerModel.elapsedText)
+            Text(model.elapsedText)
                 .font(.system(size: 44, weight: .light, design: .monospaced))
                 .foregroundStyle(FrostTheme.primary)
                 .contentTransition(.numericText())
@@ -44,15 +48,15 @@ public struct TimerView: View {
         Spacer()
 
         HStack(spacing: 12) {
-            switch app.timerModel.phase {
+            switch model.phase {
             case .running:
-                controlButton("暂停", symbol: "pause.fill") { try? app.timerModel.pause() }
-                controlButton("停止", symbol: "stop.fill") { try? app.timerModel.stop() }
-                controlButton("完成任务", symbol: "checkmark", prominent: true) { try? app.timerModel.complete() }
+                controlButton("暂停", symbol: "pause.fill") { try? model.pause() }
+                controlButton("停止", symbol: "stop.fill") { try? model.stop() }
+                controlButton("完成任务", symbol: "checkmark", prominent: true) { try? model.complete() }
             case .paused:
-                controlButton("继续", symbol: "play.fill", prominent: true) { try? app.timerModel.resume() }
-                controlButton("停止", symbol: "stop.fill") { try? app.timerModel.stop() }
-                controlButton("完成任务", symbol: "checkmark") { try? app.timerModel.complete() }
+                controlButton("继续", symbol: "play.fill", prominent: true) { try? model.resume() }
+                controlButton("停止", symbol: "stop.fill") { try? model.stop() }
+                controlButton("完成任务", symbol: "checkmark") { try? model.complete() }
             case .idle:
                 EmptyView()
             }
@@ -61,7 +65,7 @@ public struct TimerView: View {
     }
 
     private var phaseLabel: String {
-        switch app.timerModel.phase {
+        switch model.phase {
         case .running: return "计时中"
         case .paused: return "已暂停"
         case .idle: return "空闲"

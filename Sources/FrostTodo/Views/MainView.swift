@@ -27,9 +27,9 @@ public struct MainView: View {
     private var contentColumn: some View {
         switch selection {
         case .history:
-            HistoryView()
+            HistoryView(model: app.historyModel)
         case .settings:
-            SettingsView()
+            SettingsView(model: app.settingsModel)
         default:
             TaskListView(model: app.taskList, selection: $selection, selectedTaskID: $selectedTaskID)
         }
@@ -39,12 +39,12 @@ public struct MainView: View {
     private var detailColumn: some View {
         switch selection {
         case .history, .settings:
-            TimerView()
+            TimerView(model: app.timerModel)
         default:
             if let taskID = selectedTaskID, let task = app.task(byID: taskID) {
                 TaskDetailView(task: task)
             } else {
-                TimerView()
+                TimerView(model: app.timerModel)
             }
         }
     }

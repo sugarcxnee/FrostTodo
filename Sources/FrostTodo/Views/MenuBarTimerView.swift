@@ -4,35 +4,38 @@ import AppKit
 /// 菜单栏内容：当前计时任务、用时与快捷操作、快速添加
 public struct MenuBarTimerView: View {
     @EnvironmentObject private var app: AppViewModel
+    @ObservedObject private var timerModel: TimerViewModel
     @State private var quickAddText = ""
     private let ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
-    public init() {}
+    public init(timerModel: TimerViewModel) {
+        self.timerModel = timerModel
+    }
 
     public var body: some View {
         VStack(spacing: 10) {
-            if app.timerModel.isTracking {
+            if timerModel.isTracking {
                 VStack(spacing: 4) {
-                    Text(app.timerModel.activeTaskTitle ?? "")
+                    Text(timerModel.activeTaskTitle ?? "")
                         .font(.headline)
                         .lineLimit(1)
-                    Text(app.timerModel.elapsedText)
+                    Text(timerModel.elapsedText)
                         .font(.system(size: 28, weight: .light, design: .monospaced))
                         .foregroundStyle(FrostTheme.primary)
-                    Text(app.timerModel.phase == .running ? "[计时中]" : "[已暂停]")
+                    Text(timerModel.phase == .running ? "[计时中]" : "[已暂停]")
                         .font(.caption)
                         .foregroundStyle(FrostTheme.secondaryText)
                 }
                 HStack {
-                    switch app.timerModel.phase {
+                    switch timerModel.phase {
                     case .running:
-                        menuButton("暂停", "pause.fill") { try? app.timerModel.pause() }
-                        menuButton("停止", "stop.fill") { try? app.timerModel.stop() }
-                        menuButton("完成", "checkmark") { try? app.timerModel.complete() }
+                        menuButton("暂停", "pause.fill") { try? timerModel.pause() }
+                        menuButton("停止", "stop.fill") { try? timerModel.stop() }
+                        menuButton("完成", "checkmark") { try? timerModel.complete() }
                     case .paused:
-                        menuButton("继续", "play.fill") { try? app.timerModel.resume() }
-                        menuButton("停止", "stop.fill") { try? app.timerModel.stop() }
-                        menuButton("完成", "checkmark") { try? app.timerModel.complete() }
+                        menuButton("继续", "play.fill") { try? timerModel.resume() }
+                        menuButton("停止", "stop.fill") { try? timerModel.stop() }
+                        menuButton("完成", "checkmark") { try? timerModel.complete() }
                     case .idle:
                         EmptyView()
                     }
@@ -62,7 +65,7 @@ public struct MenuBarTimerView: View {
         .padding(12)
         .frame(minWidth: 260)
         .onReceive(ticker) { _ in
-            app.timerModel.refresh()
+            timerModel.refresh()
         }
     }
 
@@ -86,16 +89,18 @@ public struct MenuBarTimerView: View {
 
 /// 菜单栏标签：计时中显示任务与用时
 public struct MenuBarLabelView: View {
-    @EnvironmentObject private var app: AppViewModel
+    @ObservedObject private var timerModel: TimerViewModel
     private let ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
-    public init() {}
+    public init(timerModel: TimerViewModel) {
+        self.timerModel = timerModel
+    }
 
     public var body: some View {
-        if app.timerModel.isTracking {
-            Text("[\(app.timerModel.elapsedText)] \(app.timerModel.activeTaskTitle ?? "")")
+        if timerModel.isTracking {
+            Text("[\(timerModel.elapsedText)] \(timerModel.activeTaskTitle ?? "")")
                 .onReceive(ticker) { _ in
-                    app.timerModel.refresh()
+                    timerModel.refresh()
                 }
         } else {
             Image(systemName: "circle.dashed")

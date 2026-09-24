@@ -3,16 +3,21 @@ import SwiftUI
 /// 中栏：历史列表（筛选、搜索、排序、分页、清空、导出）
 public struct HistoryView: View {
     @EnvironmentObject private var app: AppViewModel
+    @ObservedObject private var model: HistoryViewModel
     @State private var searchText = ""
     @State private var typeFilter: HistoryEventType?
     @State private var ascending = false
     @State private var showClearConfirmation = false
 
+    public init(model: HistoryViewModel) {
+        self.model = model
+    }
+
     public var body: some View {
         VStack(spacing: 0) {
             filterBar
             Divider()
-            if app.historyModel.visibleEvents.isEmpty {
+            if model.visibleEvents.isEmpty {
                 Spacer()
                 ContentUnavailableView("暂无历史", systemImage: "clock.arrow.circlepath")
                 Spacer()
@@ -27,7 +32,7 @@ public struct HistoryView: View {
         .searchable(text: $searchText, placement: .toolbar, prompt: "搜索标题与详情")
         .confirmationDialog("确认清空全部历史？该操作不可撤销。", isPresented: $showClearConfirmation, titleVisibility: .visible) {
             Button("清空历史", role: .destructive) {
-                try? app.historyModel.clearAll()
+                try? model.clearAll()
             }
             Button("取消", role: .cancel) {}
         }
@@ -76,7 +81,7 @@ public struct HistoryView: View {
 
     private var historyList: some View {
         List {
-            ForEach(app.historyModel.dayGroups, id: \.day) { group in
+            ForEach(model.dayGroups, id: \.day) { group in
                 Section(Formatters.day.string(from: group.day)) {
                     ForEach(group.events) { event in
                         HistoryRowView(event: event)
@@ -84,9 +89,9 @@ public struct HistoryView: View {
                     }
                 }
             }
-            if app.historyModel.canLoadMore {
+            if model.canLoadMore {
                 Button("加载更多") {
-                    try? app.historyModel.loadMore()
+                    try? model.loadMore()
                 }
                 .frame(maxWidth: .infinity)
             }
@@ -104,10 +109,10 @@ public struct HistoryView: View {
     }
 
     private func reload() {
-        app.historyModel.filter.types = typeFilter.map { [$0] } ?? []
-        app.historyModel.filter.searchText = searchText
-        app.historyModel.filter.ascending = ascending
-        try? app.historyModel.reload()
+        model.filter.types = typeFilter.map { [$0] } ?? []
+        model.filter.searchText = searchText
+        model.filter.ascending = ascending
+        try? model.reload()
     }
 
     private func exportHistory(json: Bool) {
@@ -117,9 +122,9 @@ public struct HistoryView: View {
         guard panel.runModal() == .OK, let url = panel.url else { return }
         do {
             if json {
-                try app.historyModel.exportJSON().write(to: url)
+                try model.exportJSON().write(to: url)
             } else {
-                try app.historyModel.exportCSV().write(to: url, atomically: true, encoding: .utf8)
+                try model.exportCSV().write(to: url, atomically: true, encoding: .utf8)
             }
         } catch {
             // 导出失败时保持界面可用即可；失败原因不包含敏感信息
