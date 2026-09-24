@@ -255,3 +255,74 @@ struct Phase3HistoryServiceTests {
         #expect(groups[1].events.count == 1)
     }
 }
+
+// MARK: - 类别分组与遗留清理
+
+@MainActor
+@Suite("历史类别分组与遗留清理")
+struct HistoryFamilyAndPurgeTests {
+
+    private func makeEnvironment() throws -> (HistoryService, PersistenceService, ManualClock) {
+        let clock = ManualClock(Date(timeIntervalSince1970: 1_700_000_000))
+        let persistence = try PersistenceService(inMemory: true)
+        let service = HistoryService(persistence: persistence, clock: clock)
+        return (service, persistence, clock)
+    }
+
+    @Test("类别映射完整且互不重叠")
+    func familyMappingIsComplete() {
+        let all = Set(HistoryEventType.allCases)
+        var union: Set<HistoryEventType> = []
+        var totalCount = 0
+        for family in HistoryEventFamily.allCases {
+            union.formUnion(family.types)
+            totalCount += family.types.count
+        }
+        #expect(union == all)               // 无遗漏
+        #expect(totalCount == all.count)    // 无重叠
+
+        #expect(HistoryEventFamily.task.types.contains(.taskUpdated)) // 遗留兼容归入任务
+        #expect(HistoryEventFamily.timing.types.contains(.countdownStarted))
+        #expect(HistoryEventFamily.calendar.types.contains(.calendarSyncFailed))
+        #expect(HistoryEventFamily.management.types.contains(.historyPruned))
+    }
+
+    @Test("按类别筛选历史")
+    func filterByFamily() throws {
+        let (history, persistence, clock) = try makeEnvironment()
+        try history.record(HistoryEventInput(type: .taskCreated, title: "任务事件"))
+        clock.advance(by: 1)
+        try history.record(HistoryEventInput(type: .timerStarted, title: "计时事件"))
+        clock.advance(by: 1)
+        try history.record(HistoryEventInput(type: .countdownEnded, title: "倒计时事件"))
+        clock.advance(by: 1)
+        try history.record(HistoryEventInput(type: .calendarEventCreated, title: "日历事件"))
+        try persistence.save()
+
+        let timing = try history.events(matching: HistoryFilter(types: HistoryEventFamily.timing.types))
+        #expect(Set(timing.map(\.title)) == ["计时事件", "倒计时事件"])
+
+        let calendar = try history.events(matching: HistoryFilter(types: HistoryEventFamily.calendar.types))
+        #expect(calendar.map(\.title) == ["日历事件"])
+    }
+
+    @Test("遗留清理移除全部 task.updated 记录且不影响其他历史")
+    func purgeRetiredEvents() throws {
+        let (history, persistence, clock) = try makeEnvironment()
+        try history.record(HistoryEventInput(type: .taskUpdated, title: "旧编辑记录 A"))
+        clock.advance(by: 1)
+        try history.record(HistoryEventInput(type: .taskUpdated, title: "旧编辑记录 B"))
+        clock.advance(by: 1)
+        try history.record(HistoryEventInput(type: .taskCreated, title: "创建记录"))
+        clock.advance(by: 1)
+        try history.record(HistoryEventInput(type: .timerStarted, title: "计时记录"))
+        try persistence.save()
+
+        let purged = try history.purgeRetiredEventTypes()
+        #expect(purged == 2)
+
+        let remaining = try history.events(matching: HistoryFilter(ascending: true)).map(\.title)
+        #expect(remaining == ["创建记录", "计时记录"])
+        #expect(try history.totalCount() == 2)
+    }
+}

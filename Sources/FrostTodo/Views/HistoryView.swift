@@ -5,7 +5,7 @@ public struct HistoryView: View {
     @EnvironmentObject private var app: AppViewModel
     @ObservedObject private var model: HistoryViewModel
     @State private var searchText = ""
-    @State private var typeFilter: HistoryEventType?
+    @State private var familyFilter: HistoryEventFamily?
     @State private var ascending = false
     @State private var showClearConfirmation = false
 
@@ -29,6 +29,7 @@ public struct HistoryView: View {
         .navigationTitle("历史")
         .onAppear(perform: reload)
         .onChange(of: searchText, perform: { _ in reload() })
+        .onChange(of: familyFilter) { _ in reload() }
         .searchable(text: $searchText, placement: .toolbar, prompt: "搜索标题与详情")
         .confirmationDialog("确认清空全部历史？该操作不可撤销。", isPresented: $showClearConfirmation, titleVisibility: .visible) {
             Button("清空历史", role: .destructive) {
@@ -40,14 +41,14 @@ public struct HistoryView: View {
 
     private var filterBar: some View {
         HStack(spacing: 10) {
-            Picker("类型", selection: $typeFilter) {
-                Text("全部类型").tag(HistoryEventType?.none)
-                ForEach(groupedTypes, id: \.self) { type in
-                    Text(type.displayName).tag(HistoryEventType?.some(type))
+            Picker("类别", selection: $familyFilter) {
+                Text("全部类别").tag(HistoryEventFamily?.none)
+                ForEach(HistoryEventFamily.allCases) { family in
+                    Text(family.title).tag(HistoryEventFamily?.some(family))
                 }
             }
             .pickerStyle(.menu)
-            .frame(width: 170)
+            .frame(width: 130)
 
             Button {
                 ascending.toggle()
@@ -100,16 +101,8 @@ public struct HistoryView: View {
         .scrollContentBackground(.hidden)
     }
 
-    private var groupedTypes: [HistoryEventType] {
-        [.taskCreated, .taskCompleted, .taskDeleted,
-         .timerStarted, .timerPaused, .timerStopped,
-         .sessionStarted, .sessionEnded,
-         .calendarEventCreated, .calendarEventUpdated, .calendarEventRebuilt, .calendarSyncFailed,
-         .settingsChanged, .notificationSent, .historyCleared]
-    }
-
     private func reload() {
-        model.filter.types = typeFilter.map { [$0] } ?? []
+        model.filter.types = familyFilter?.types ?? []
         model.filter.searchText = searchText
         model.filter.ascending = ascending
         try? model.reload()

@@ -189,6 +189,26 @@ public final class HistoryService: HistoryRecording {
         try persistence.fetchCount(FetchDescriptor<HistoryEvent>())
     }
 
+    // MARK: - 遗留清理
+
+    /// 遗留类型：新版不再写入；应用启动时清理存量记录
+    public static let retiredTypes: [HistoryEventType] = [.taskUpdated]
+
+    /// 清理遗留类型的历史记录，返回清理条数
+    @discardableResult
+    public func purgeRetiredEventTypes() throws -> Int {
+        let retired = Self.retiredTypes.map(\.rawValue)
+        let stale = try persistence.fetch(FetchDescriptor<HistoryEvent>(
+            predicate: #Predicate { retired.contains($0.type) }
+        ))
+        guard !stale.isEmpty else { return 0 }
+        for event in stale {
+            persistence.delete(event)
+        }
+        try persistence.save()
+        return stale.count
+    }
+
     // MARK: - 清理
 
     /// 清空全部历史，仅保留一条“历史已清空”记录

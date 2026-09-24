@@ -85,6 +85,50 @@ public enum HistoryEventType: String, Codable, CaseIterable {
     }
 }
 
+/// 历史事件类别：历史页筛选的分组维度，每个类型恰好属于一个类别
+public enum HistoryEventFamily: String, CaseIterable, Identifiable {
+    case task
+    case timing
+    case calendar
+    case settings
+    case notification
+    case management
+
+    public var id: String { rawValue }
+
+    public var title: String {
+        switch self {
+        case .task: return "任务"
+        case .timing: return "计时"
+        case .calendar: return "日历"
+        case .settings: return "设置"
+        case .notification: return "通知"
+        case .management: return "管理"
+        }
+    }
+
+    /// 该类别包含的事件类型（task 族含遗留的 taskUpdated 以兼容存量数据）
+    public var types: Set<HistoryEventType> {
+        switch self {
+        case .task:
+            return [.taskCreated, .taskUpdated, .taskCompleted, .taskUncompleted, .taskDeleted]
+        case .timing:
+            return [.timerStarted, .timerPaused, .timerResumed, .timerStopped,
+                    .sessionStarted, .sessionEnded,
+                    .countdownStarted, .countdownPhaseCompleted, .countdownEnded]
+        case .calendar:
+            return [.calendarEventCreated, .calendarEventUpdated, .calendarEventDeleted,
+                    .calendarEventRebuilt, .calendarSyncFailed]
+        case .settings:
+            return [.settingsChanged]
+        case .notification:
+            return [.notificationSent]
+        case .management:
+            return [.historyCleared, .historyPruned]
+        }
+    }
+}
+
 /// 历史事件模型：一旦写入默认不可修改
 @Model
 public final class HistoryEvent {

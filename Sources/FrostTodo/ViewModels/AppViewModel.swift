@@ -33,6 +33,8 @@ public final class AppViewModel: ObservableObject {
         self.persistence = persistence
         let history = HistoryService(persistence: persistence, clock: clock)
         self.history = history
+        // 启动时清理遗留的 task.updated 存量记录（新版任务信息编辑不写历史）
+        _ = try? history.purgeRetiredEventTypes()
         let tasks = TaskService(persistence: persistence, history: history, clock: clock)
         self.tasks = tasks
         let timer = TimerService(persistence: persistence, clock: clock, history: history)
