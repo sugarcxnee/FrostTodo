@@ -248,3 +248,26 @@ final class SelectiveFailureRecorder: HistoryRecording {
         try wrapped.record(input)
     }
 }
+
+// MARK: - 自动保存契约
+
+@MainActor
+@Suite("自动保存契约：无变更不写历史")
+struct AutosaveContractTests {
+
+    @Test("update 应用相同值时不产生 task.updated 历史")
+    func updateWithNoEffectiveChangeWritesNoHistory() throws {
+        let clock = ManualClock(Date(timeIntervalSince1970: 1_700_000_000))
+        let persistence = try PersistenceService(inMemory: true)
+        let history = HistoryService(persistence: persistence, clock: clock)
+        let tasks = TaskService(persistence: persistence, history: history, clock: clock)
+        let task = try tasks.create(title: "自动保存任务")
+
+        // 自动保存可能多次触发；值未变化时不得产生编辑历史
+        try tasks.update(task) { $0.title = "自动保存任务" }
+        try tasks.update(task) { $0.title = "自动保存任务" }
+
+        let updated = try history.events(matching: HistoryFilter(types: [.taskUpdated], taskID: task.id))
+        #expect(updated.isEmpty)
+    }
+}

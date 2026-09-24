@@ -21,6 +21,9 @@ public struct TaskDetailView: View {
     @State private var countdownRest = 5
     @State private var countdownRounds = 4
     @State private var taskHistory: [HistoryEvent] = []
+    @State private var pendingSaveTask: Task<Void, Never>?
+    @State private var hasPendingChanges = false
+    @State private var showsSavedIndicator = false
 
     public var body: some View {
         ScrollView {
@@ -36,6 +39,21 @@ public struct TaskDetailView: View {
         .background(FrostTheme.background)
         .onAppear { loadState() }
         .onChange(of: task) { loadState() }
+        .onDisappear { flushPendingSave() }
+        .onChange(of: title) { _ in scheduleAutosave() }
+        .onChange(of: notes) { _ in scheduleAutosave() }
+        .onChange(of: hasDueDate) { _ in scheduleAutosave() }
+        .onChange(of: dueDate) { _ in scheduleAutosave() }
+        .onChange(of: hasStartDate) { _ in scheduleAutosave() }
+        .onChange(of: startDate) { _ in scheduleAutosave() }
+        .onChange(of: estimatedMinutes) { _ in scheduleAutosave() }
+        .onChange(of: priority) { _ in scheduleAutosave() }
+        .onChange(of: tagsText) { _ in scheduleAutosave() }
+        .onChange(of: projectName) { _ in scheduleAutosave() }
+        .onChange(of: useCustomCountdown) { _ in scheduleAutosave() }
+        .onChange(of: countdownWork) { _ in scheduleAutosave() }
+        .onChange(of: countdownRest) { _ in scheduleAutosave() }
+        .onChange(of: countdownRounds) { _ in scheduleAutosave() }
     }
 
     private var header: some View {
@@ -141,13 +159,6 @@ public struct TaskDetailView: View {
                 }
             }
             countdownSection
-
-            HStack {
-                Spacer()
-                Button("保存修改") { saveChanges() }
-                    .buttonStyle(.borderedProminent)
-                    .tint(FrostTheme.primary)
-            }
         }
         .padding()
         .background(FrostTheme.card, in: RoundedRectangle(cornerRadius: 12))
@@ -264,10 +275,18 @@ public struct TaskDetailView: View {
     // MARK: - 辅助
 
     private func cardTitle(_ text: String) -> some View {
-        Text(text)
-            .font(.subheadline)
-            .fontWeight(.semibold)
-            .foregroundStyle(FrostTheme.secondaryText)
+        HStack {
+            Text(text)
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .foregroundStyle(FrostTheme.secondaryText)
+            Spacer()
+            Label("已自动保存", systemImage: "checkmark.circle")
+                .font(.caption2)
+                .foregroundStyle(FrostTheme.success)
+                .opacity(showsSavedIndicator ? 1 : 0)
+                .animation(.easeInOut(duration: 0.3), value: showsSavedIndicator)
+        }
     }
 
     private func field<Content: View>(_ label: String, @ViewBuilder content: () -> Content) -> some View {
@@ -312,7 +331,27 @@ public struct TaskDetailView: View {
         taskHistory = (try? app.history.events(matching: HistoryFilter(taskID: task.id, limit: 30))) ?? []
     }
 
-    private func saveChanges() {
+    /// 防抖自动保存：停止编辑约 0.8 秒后保存，避免逐键写历史
+    private func scheduleAutosave() {
+        hasPendingChanges = true
+        pendingSaveTask?.cancel()
+        pendingSaveTask = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 800_000_000)
+            guard !Task.isCancelled else { return }
+            performSave()
+        }
+    }
+
+    /// 离开详情页时立即保存未落盘的修改
+    private func flushPendingSave() {
+        pendingSaveTask?.cancel()
+        pendingSaveTask = nil
+        if hasPendingChanges {
+            performSave()
+        }
+    }
+
+    private func performSave() {
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         let tags = tagsText
             .split(separator: ",")
@@ -332,7 +371,18 @@ public struct TaskDetailView: View {
             $0.countdownRestMinutes = useCustomCountdown ? countdownRest : nil
             $0.countdownRounds = useCustomCountdown ? countdownRounds : nil
         }
+        hasPendingChanges = false
         try? app.taskList.reload()
-        loadState()
+        // 仅刷新历史时间线，不重写输入态，避免打断输入
+        taskHistory = (try? app.history.events(matching: HistoryFilter(taskID: task.id, limit: 30))) ?? []
+        flashSavedIndicator()
+    }
+
+    private func flashSavedIndicator() {
+        withAnimation { showsSavedIndicator = true }
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 1_500_000_000)
+            withAnimation { showsSavedIndicator = false }
+        }
     }
 }
