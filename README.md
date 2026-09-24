@@ -4,7 +4,6 @@
 
 > A minimal, cool-toned native macOS todo and time-tracking app with deep Apple Calendar integration, pomodoro-style countdowns, and a fully traceable, exportable history of everything you do. Local-first, sandboxed, 153 offline unit tests green.
 
-项目过程与实现记录（七阶段演进、设计决策与踩坑实录）见 [docs/PROJECT_JOURNEY.md](docs/PROJECT_JOURNEY.md)。
 
 ## 技术栈
 
@@ -20,7 +19,7 @@
 - 任务计时：开始、暂停、继续、停止、完成；每次开始到结束记录为一个 TimeSession；暂停结束当前时间段、继续开新时间段；跨天计时；应用重启或崩溃后自动恢复计时状态；防重复开始同一任务；切换任务自动结束当前计时。
 - 倒计时（类番茄钟）：设置中配置默认专注、休息时长与轮数，任务基本信息中可按任务自定义（自定义优先，未设置项逐项回落默认）；休息为 0 即纯倒计时，多轮连续进行且左栏面板显示总时长（专注乘轮数）；完成最后一轮专注即自然结束；专注到点自动进入休息并结束当段时间（日历更新为计时记录），休息到点自动回到专注（新时间段与日历事件）；随时可手动结束，结束时与正计时一致记录到日历；支持重启恢复；左栏常驻倒计时与正计时面板，菜单栏同步显示倒计时剩余。
 - 计时联动：正计时与倒计时生命周期绑定——停止或完成正计时、切换任务、手动完成或删除任务时，进行中的倒计时自动同步结束并记录原因；结束倒计时同时停止正计时。
-- 历史记录：任务、计时、时间段、日历、设置、通知、倒计时七类事件全量记录；按类型、任务、日期范围、标签、项目筛选；标题与详情搜索；正序倒序；按天分组；分页加载；导出 JSON 与 CSV；二次确认清空并留痕；按天数或条数的保留策略清理并留痕。
+- 历史记录（仅进程事件）：任务只记录创建、完成、取消完成、删除，任务信息修改不写入历史；计时、时间段、日历、设置、通知、倒计时事件全量记录；按类型、任务、日期范围、标签、项目筛选；标题与详情搜索；正序倒序；按天分组；分页加载；导出 JSON 与 CSV；二次确认清空并留痕；按天数或条数的保留策略清理并留痕。
 - 日历联动：计时创建 `[计时中] 任务名` 事件（结束时间取预计时长或默认 15 分钟）；暂停或停止更新结束时间、标题为 `[计时记录] 任务名` 并写入实际时长；任务完成更新为 `[已完成] 任务名` 或创建 `[完成记录] 任务名`（完成时间起 5 分钟止）；事件备注含任务 ID、Session ID、实际时长、状态与备注摘要；事件 URL 为 `frosttodo://task/<任务ID>` 支持回跳；自动创建专用日历 FrostTodo；事件被手动删除时自动重建；权限被拒或无日历时优雅降级，本地功能不受影响；侧边栏展示今日日程（含全天事件）。
 - 菜单栏：常驻显示当前计时任务与已用时间（倒计时激活时优先显示倒计时剩余），提供暂停、继续、停止、完成、结束倒计时与快速添加。
 - 通知：任务截止提醒、计时达到预计时长提醒。
@@ -33,7 +32,6 @@
 FrostTodo/
 ├── Package.swift                  SPM 构建定义（swift test 测试门禁入口）
 ├── project.yml                    XcodeGen 配置（生成正式 .xcodeproj）
-├── docs/PROJECT_JOURNEY.md        项目过程与实现记录书
 ├── Support/
 │   ├── Info.plist                 权限描述与 frosttodo URL Scheme
 │   └── FrostTodo.entitlements     App Sandbox + 日历访问 + 用户选择文件读写
@@ -113,7 +111,7 @@ Test run with 153 tests in 23 suites passed after 0.527 seconds.
 6. 历史按标签与项目筛选依赖任务类事件 payload 中的 tags 与 project 字段，非任务类事件不参与该两类筛选。
 7. 历史时间戳保证同批写入严格递增（相差 1 毫秒），确保排序与分组稳定。
 8. 专用日历命名 FrostTodo，优先使用本地 Source 创建；设置中的默认日历失效时自动重建并记忆新 ID。
-9. 任务详情自动保存依赖 TaskService.update 的无变更早退（有契约测试锁定），防抖期间多次触发不会刷编辑历史。
+9. 任务信息编辑不写历史（有契约测试锁定），自动保存高频触发不会产生任何编辑记录；TaskService.update 仅保存变更。
 
 ## 已知限制
 
@@ -138,6 +136,6 @@ Test run with 153 tests in 23 suites passed after 0.527 seconds.
 10. 冷色调简约界面并支持深色模式：FrostTheme 动态颜色。
 11. 历史可记录、查询、筛选、导出、清理：阶段 3 与 5 测试。
 12. 全部阶段测试通过且有运行记录：153 例全绿，见上。
-13. 提供 README 与测试：本文档、docs/PROJECT_JOURNEY.md 与 Tests 目录。
+13. 提供 README 与测试：本文档与 Tests 目录。
 14. 全项目无 emoji：已按 Unicode 区段扫描全部源码与文档，结果为空。
 15. 无被跳过或删除的测试：未使用 XCTSkip 或 disabled，测试仅增未减。

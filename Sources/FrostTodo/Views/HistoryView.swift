@@ -101,7 +101,7 @@ public struct HistoryView: View {
     }
 
     private var groupedTypes: [HistoryEventType] {
-        [.taskCreated, .taskUpdated, .taskCompleted, .taskDeleted,
+        [.taskCreated, .taskCompleted, .taskDeleted,
          .timerStarted, .timerPaused, .timerStopped,
          .sessionStarted, .sessionEnded,
          .calendarEventCreated, .calendarEventUpdated, .calendarEventRebuilt, .calendarSyncFailed,

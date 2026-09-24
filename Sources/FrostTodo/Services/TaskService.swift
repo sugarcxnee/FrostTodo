@@ -75,21 +75,11 @@ public final class TaskService {
 
     // MARK: - 编辑
 
-    /// 编辑任务并在历史中记录变更字段
+    /// 编辑任务信息。按需求约定：任务信息修改不写历史，仅进程事件
+    /// （创建、完成、取消完成、删除）与计时相关事件入历史。
     public func update(_ task: TodoTask, applying: (TodoTask) -> Void) throws {
-        let before = TaskFieldSnapshot(task)
         applying(task)
-        let changes = before.diff(with: task)
-        guard !changes.isEmpty else { return }
-
         do {
-            try history.record(HistoryEventInput(
-                type: .taskUpdated, taskID: task.id,
-                title: "编辑任务：\(task.title)",
-                detail: "变更字段：" + changes.map(\.name).joined(separator: "、"),
-                payload: Dictionary(uniqueKeysWithValues: changes.map { ($0.name, "\($0.oldValue) -> \($0.newValue)") }),
-                source: .user
-            ))
             try persistence.save()
         } catch {
             persistence.rollback()
@@ -169,93 +159,5 @@ public final class TaskService {
             payload["project"] = project
         }
         return payload
-    }
-}
-
-/// 任务字段快照：编辑前后对比得出变更字段
-struct TaskFieldSnapshot {
-    let title: String
-    let notes: String?
-    let dueDate: Date?
-    let startDate: Date?
-    let estimatedMinutes: Int?
-    let priority: Int
-    let tags: [String]
-    let projectName: String?
-    let countdownWorkMinutes: Int?
-    let countdownRestMinutes: Int?
-    let countdownRounds: Int?
-
-    init(_ task: TodoTask) {
-        title = task.title
-        notes = task.notes
-        dueDate = task.dueDate
-        startDate = task.startDate
-        estimatedMinutes = task.estimatedMinutes
-        priority = task.priority
-        tags = task.tags
-        projectName = task.projectName
-        countdownWorkMinutes = task.countdownWorkMinutes
-        countdownRestMinutes = task.countdownRestMinutes
-        countdownRounds = task.countdownRounds
-    }
-
-    struct Change {
-        let name: String
-        let oldValue: String
-        let newValue: String
-    }
-
-    private static func value(_ any: Any?) -> String {
-        switch any {
-        case .some(let value): return String(describing: value)
-        case .none: return "无"
-        }
-    }
-
-    private static func minutes(_ value: Int?) -> String {
-        value.map { "\($0) 分钟" } ?? "跟随默认"
-    }
-
-    private static func rounds(_ value: Int?) -> String {
-        value.map { "\($0) 轮" } ?? "跟随默认"
-    }
-
-    func diff(with task: TodoTask) -> [Change] {
-        var changes: [Change] = []
-        if title != task.title {
-            changes.append(Change(name: "标题", oldValue: title, newValue: task.title))
-        }
-        if notes != task.notes {
-            changes.append(Change(name: "备注", oldValue: Self.value(notes), newValue: Self.value(task.notes)))
-        }
-        if dueDate != task.dueDate {
-            changes.append(Change(name: "截止日期", oldValue: Self.value(dueDate), newValue: Self.value(task.dueDate)))
-        }
-        if startDate != task.startDate {
-            changes.append(Change(name: "开始日期", oldValue: Self.value(startDate), newValue: Self.value(task.startDate)))
-        }
-        if estimatedMinutes != task.estimatedMinutes {
-            changes.append(Change(name: "预计时长", oldValue: Self.value(estimatedMinutes), newValue: Self.value(task.estimatedMinutes)))
-        }
-        if priority != task.priority {
-            changes.append(Change(name: "优先级", oldValue: String(priority), newValue: String(task.priority)))
-        }
-        if tags != task.tags {
-            changes.append(Change(name: "标签", oldValue: tags.joined(separator: ","), newValue: task.tags.joined(separator: ",")))
-        }
-        if projectName != task.projectName {
-            changes.append(Change(name: "项目", oldValue: Self.value(projectName), newValue: Self.value(task.projectName)))
-        }
-        if countdownWorkMinutes != task.countdownWorkMinutes {
-            changes.append(Change(name: "倒计时专注时长", oldValue: Self.minutes(countdownWorkMinutes), newValue: Self.minutes(task.countdownWorkMinutes)))
-        }
-        if countdownRestMinutes != task.countdownRestMinutes {
-            changes.append(Change(name: "倒计时休息时长", oldValue: Self.minutes(countdownRestMinutes), newValue: Self.minutes(task.countdownRestMinutes)))
-        }
-        if countdownRounds != task.countdownRounds {
-            changes.append(Change(name: "倒计时轮数", oldValue: Self.rounds(countdownRounds), newValue: Self.rounds(task.countdownRounds)))
-        }
-        return changes
     }
 }

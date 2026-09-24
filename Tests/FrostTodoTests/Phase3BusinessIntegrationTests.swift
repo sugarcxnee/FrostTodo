@@ -59,20 +59,20 @@ struct Phase3BusinessIntegrationTests {
         #expect(event.payload["project"] == "项目一")
     }
 
-    @Test("编辑任务产生 task.updated 历史且 detail 包含变更字段")
-    func updateTaskWritesChangedFields() throws {
+    @Test("编辑任务生效但不写任何编辑历史（仅记录进程事件）")
+    func updateTaskAppliesWithoutWritingHistory() throws {
         let env = try makeEnvironment()
         let task = try env.tasks.create(title: "原标题")
 
         env.clock.advance(by: 10)
         try env.tasks.update(task) { $0.title = "新标题"; $0.projectName = "新项目" }
 
-        let events = try env.history.events(matching: HistoryFilter(types: [.taskUpdated], taskID: task.id))
-        #expect(events.count == 1)
-        let event = try #require(events.first)
-        #expect(event.detail?.contains("标题") == true)
-        #expect(event.detail?.contains("项目") == true)
-        #expect(event.payload["标题"] == "原标题 -> 新标题")
+        // 修改已生效
+        #expect(task.title == "新标题")
+        #expect(task.projectName == "新项目")
+        // 历史仅保留创建（进程事件），无编辑记录
+        let events = try env.history.events(matching: HistoryFilter(taskID: task.id))
+        #expect(events.map(\.typeValue) == [.taskCreated])
     }
 
     @Test("完成任务产生 task.completed 历史并写入完成时间")
@@ -252,22 +252,25 @@ final class SelectiveFailureRecorder: HistoryRecording {
 // MARK: - 自动保存契约
 
 @MainActor
-@Suite("自动保存契约：无变更不写历史")
+@Suite("自动保存契约：任务编辑不写历史")
 struct AutosaveContractTests {
 
-    @Test("update 应用相同值时不产生 task.updated 历史")
-    func updateWithNoEffectiveChangeWritesNoHistory() throws {
+    @Test("update 无论值是否变化均不产生 task.updated 历史")
+    func updateNeverWritesEditHistory() throws {
         let clock = ManualClock(Date(timeIntervalSince1970: 1_700_000_000))
         let persistence = try PersistenceService(inMemory: true)
         let history = HistoryService(persistence: persistence, clock: clock)
         let tasks = TaskService(persistence: persistence, history: history, clock: clock)
         let task = try tasks.create(title: "自动保存任务")
 
-        // 自动保存可能多次触发；值未变化时不得产生编辑历史
+        // 自动保存可能高频触发；任务信息编辑一律不写历史
         try tasks.update(task) { $0.title = "自动保存任务" }
-        try tasks.update(task) { $0.title = "自动保存任务" }
+        try tasks.update(task) { $0.title = "自动保存任务（改）" }
+        try tasks.update(task) { $0.title = "自动保存任务（改）" }
 
         let updated = try history.events(matching: HistoryFilter(types: [.taskUpdated], taskID: task.id))
         #expect(updated.isEmpty)
+        let all = try history.events(matching: HistoryFilter(taskID: task.id))
+        #expect(all.map(\.typeValue) == [.taskCreated])
     }
 }

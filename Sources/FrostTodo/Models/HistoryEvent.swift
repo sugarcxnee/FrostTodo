@@ -13,6 +13,7 @@ public enum HistorySource: String, Codable, CaseIterable {
 public enum HistoryEventType: String, Codable, CaseIterable {
     // 任务历史
     case taskCreated = "task.created"
+    /// 遗留类型：仅用于显示旧数据，新版不再写入（任务信息修改不记录）
     case taskUpdated = "task.updated"
     case taskCompleted = "task.completed"
     case taskUncompleted = "task.uncompleted"

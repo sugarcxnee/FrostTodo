@@ -455,8 +455,8 @@ struct Phase7TaskCountdownTests {
         #expect(countdown.restSeconds == 15 * 60)
     }
 
-    @Test("编辑任务倒计时时长：产生 task.updated 历史且 detail 包含字段")
-    func editingDurationsWritesHistory() throws {
+    @Test("编辑任务倒计时时长：生效但不写编辑历史")
+    func editingDurationsAppliesWithoutHistory() throws {
         let (_, _, tasks, persistence, clock) = try makeEnvironment()
         let history = HistoryService(persistence: persistence, clock: clock)
         let task = try tasks.create(title: "编辑倒计时时长")
@@ -466,13 +466,10 @@ struct Phase7TaskCountdownTests {
             $0.countdownRestMinutes = 10
         }
 
-        let event = try #require(
-            history.events(matching: HistoryFilter(types: [.taskUpdated], taskID: task.id)).first
-        )
-        #expect(event.detail?.contains("倒计时专注时长") == true)
-        #expect(event.detail?.contains("倒计时休息时长") == true)
-        #expect(event.payload["倒计时专注时长"] == "跟随默认 -> 45 分钟")
-        #expect(event.payload["倒计时休息时长"] == "跟随默认 -> 10 分钟")
+        #expect(task.countdownWorkMinutes == 45)
+        #expect(task.countdownRestMinutes == 10)
+        let all = try history.events(matching: HistoryFilter(taskID: task.id))
+        #expect(all.map(\.typeValue) == [.taskCreated])
     }
 }
 
@@ -616,19 +613,17 @@ struct Phase7CountdownRoundsTests {
         _ = try viewModel.start(task: custom)
     }
 
-    @Test("编辑任务轮数产生 task.updated 历史且 payload 记录变更")
-    func editingRoundsWritesHistory() throws {
+    @Test("编辑任务轮数：生效但不写编辑历史")
+    func editingRoundsAppliesWithoutHistory() throws {
         let (_, _, tasks, _, persistence, clock) = try makeEnvironment()
         let history = HistoryService(persistence: persistence, clock: clock)
         let task = try tasks.create(title: "编辑轮数")
 
         try tasks.update(task) { $0.countdownRounds = 3 }
 
-        let event = try #require(
-            history.events(matching: HistoryFilter(types: [.taskUpdated], taskID: task.id)).first
-        )
-        #expect(event.detail?.contains("倒计时轮数") == true)
-        #expect(event.payload["倒计时轮数"] == "跟随默认 -> 3 轮")
+        #expect(task.countdownRounds == 3)
+        let all = try history.events(matching: HistoryFilter(taskID: task.id))
+        #expect(all.map(\.typeValue) == [.taskCreated])
     }
 }
 
