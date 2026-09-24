@@ -331,12 +331,12 @@ public struct TaskDetailView: View {
         taskHistory = (try? app.history.events(matching: HistoryFilter(taskID: task.id, limit: 30))) ?? []
     }
 
-    /// 防抖自动保存：停止编辑约 0.8 秒后保存，避免逐键写历史
+    /// 防抖自动保存：停止编辑约 0.4 秒后保存，避免逐键写历史
     private func scheduleAutosave() {
         hasPendingChanges = true
         pendingSaveTask?.cancel()
         pendingSaveTask = Task { @MainActor in
-            try? await Task.sleep(nanoseconds: 800_000_000)
+            try? await Task.sleep(nanoseconds: 400_000_000)
             guard !Task.isCancelled else { return }
             performSave()
         }
