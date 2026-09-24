@@ -4,7 +4,7 @@ import SwiftUI
 public struct MainView: View {
     @EnvironmentObject private var app: AppViewModel
     @State private var selection: SidebarSelection = .smart(.inbox)
-    @State private var selectedTask: TodoTask?
+    @State private var selectedTaskID: UUID?
 
     public init() {}
 
@@ -31,7 +31,7 @@ public struct MainView: View {
         case .settings:
             SettingsView()
         default:
-            TaskListView(selection: $selection, selectedTask: $selectedTask)
+            TaskListView(model: app.taskList, selection: $selection, selectedTaskID: $selectedTaskID)
         }
     }
 
@@ -41,7 +41,7 @@ public struct MainView: View {
         case .history, .settings:
             TimerView()
         default:
-            if let task = selectedTask {
+            if let taskID = selectedTaskID, let task = app.task(byID: taskID) {
                 TaskDetailView(task: task)
             } else {
                 TimerView()

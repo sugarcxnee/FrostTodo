@@ -87,4 +87,10 @@ public final class AppViewModel: ObservableObject {
     public func writableCalendars() -> [CalendarInfo] {
         provider.availableCalendars().filter(\.isWritable)
     }
+
+    /// 按 ID 取任务（右栏详情解析用；同一上下文内返回同一模型实例）
+    public func task(byID id: UUID) -> TodoTask? {
+        let descriptor = FetchDescriptor<TodoTask>(predicate: #Predicate { $0.id == id })
+        return (try? persistence.fetch(descriptor))?.first
+    }
 }
