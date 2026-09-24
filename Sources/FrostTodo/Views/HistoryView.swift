@@ -185,6 +185,9 @@ struct HistoryRowView: View {
         case .calendarSyncFailed: return "exclamationmark.triangle"
         case .settingsChanged: return "gearshape"
         case .notificationSent: return "bell"
+        case .countdownStarted: return "hourglass"
+        case .countdownPhaseCompleted: return "hourglass.bottomhalf.filled"
+        case .countdownEnded: return "checkmark.circle"
         case .historyCleared, .historyPruned: return "archivebox"
         case nil: return "circle"
         }
@@ -195,6 +198,7 @@ struct HistoryRowView: View {
         case .taskCompleted: return FrostTheme.success
         case .taskDeleted, .calendarSyncFailed: return FrostTheme.warning
         case .timerStarted, .timerResumed, .sessionStarted: return FrostTheme.primary
+        case .countdownStarted, .countdownPhaseCompleted: return FrostTheme.secondary
         case .calendarEventCreated, .calendarEventUpdated, .calendarEventRebuilt: return FrostTheme.secondary
         default: return FrostTheme.secondaryText
         }

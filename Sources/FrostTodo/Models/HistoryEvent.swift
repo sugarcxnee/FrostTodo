@@ -35,6 +35,10 @@ public enum HistoryEventType: String, Codable, CaseIterable {
     case settingsChanged = "settings.changed"
     // 通知历史
     case notificationSent = "notification.sent"
+    // 倒计时历史
+    case countdownStarted = "countdown.started"
+    case countdownPhaseCompleted = "countdown.phaseCompleted"
+    case countdownEnded = "countdown.ended"
     // 历史管理
     case historyCleared = "history.cleared"
     case historyPruned = "history.pruned"
@@ -71,6 +75,9 @@ public enum HistoryEventType: String, Codable, CaseIterable {
         case .calendarSyncFailed: return "日历同步失败"
         case .settingsChanged: return "设置变更"
         case .notificationSent: return "通知发送"
+        case .countdownStarted: return "开始倒计时"
+        case .countdownPhaseCompleted: return "倒计时阶段完成"
+        case .countdownEnded: return "结束倒计时"
         case .historyCleared: return "历史已清空"
         case .historyPruned: return "历史清理"
         }

@@ -27,6 +27,10 @@ public final class AppSettings {
     public var historyRetentionPolicy: String
     public var historyRetentionDays: Int
     public var historyRetentionCount: Int
+    /// 倒计时专注时长（分钟）；内联默认值保证轻量迁移可用
+    public var countdownWorkMinutes: Int = 25
+    /// 倒计时休息时长（分钟），0 表示纯倒计时
+    public var countdownRestMinutes: Int = 5
 
     public init(
         defaultCalendarID: String? = nil,
@@ -37,7 +41,9 @@ public final class AppSettings {
         appearance: String = AppearanceMode.system.rawValue,
         historyRetentionPolicy: String = HistoryRetentionPolicy.forever.rawValue,
         historyRetentionDays: Int = 365,
-        historyRetentionCount: Int = 10_000
+        historyRetentionCount: Int = 10_000,
+        countdownWorkMinutes: Int = 25,
+        countdownRestMinutes: Int = 5
     ) {
         self.defaultCalendarID = defaultCalendarID
         self.writeToCalendar = writeToCalendar
@@ -48,6 +54,8 @@ public final class AppSettings {
         self.historyRetentionPolicy = historyRetentionPolicy
         self.historyRetentionDays = historyRetentionDays
         self.historyRetentionCount = historyRetentionCount
+        self.countdownWorkMinutes = countdownWorkMinutes
+        self.countdownRestMinutes = countdownRestMinutes
     }
 
     public var appearanceValue: AppearanceMode {

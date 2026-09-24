@@ -13,6 +13,7 @@ public enum FrostTodoSchemaV1: VersionedSchema {
             HistoryEvent.self,
             AppSettings.self,
             TimerSnapshot.self,
+            CountdownSnapshot.self,
         ]
     }
 }
@@ -106,6 +107,16 @@ public final class PersistenceService {
             return existing
         }
         let snapshot = TimerSnapshot()
+        context.insert(snapshot)
+        return snapshot
+    }
+
+    /// 获取倒计时状态快照单例（不存在则创建）
+    public func countdownSnapshot() -> CountdownSnapshot {
+        if let existing = (try? context.fetch(FetchDescriptor<CountdownSnapshot>()))?.first {
+            return existing
+        }
+        let snapshot = CountdownSnapshot()
         context.insert(snapshot)
         return snapshot
     }
