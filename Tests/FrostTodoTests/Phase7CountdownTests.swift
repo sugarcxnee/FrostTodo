@@ -631,3 +631,116 @@ struct Phase7CountdownRoundsTests {
         #expect(event.payload["倒计时轮数"] == "跟随默认 -> 3 轮")
     }
 }
+
+// MARK: - 正计时与倒计时生命周期联动
+
+@MainActor
+@Suite("Phase 7: 正计时与倒计时联动结束")
+struct Phase7TimerCountdownLinkageTests {
+
+    private let epoch = Date(timeIntervalSince1970: 1_700_000_000)
+
+    private struct Environment {
+        let clock: ManualClock
+        let persistence: PersistenceService
+        let history: HistoryService
+        let tasks: TaskService
+        let timer: TimerService
+        let countdown: CountdownService
+    }
+
+    private func makeEnvironment() throws -> Environment {
+        let clock = ManualClock(epoch)
+        let persistence = try PersistenceService(inMemory: true)
+        let history = HistoryService(persistence: persistence, clock: clock)
+        let tasks = TaskService(persistence: persistence, history: history, clock: clock)
+        let timer = TimerService(persistence: persistence, clock: clock, history: history)
+        let countdown = CountdownService(persistence: persistence, timer: timer, history: history, clock: clock)
+        timer.countdownCoordinator = countdown
+        tasks.timerService = timer
+        return Environment(clock: clock, persistence: persistence, history: history, tasks: tasks, timer: timer, countdown: countdown)
+    }
+
+    @Test("停止正计时：倒计时同步结束并记录 timer-stopped 原因")
+    func stoppingTimerEndsCountdown() throws {
+        let env = try makeEnvironment()
+        let task = try env.tasks.create(title: "联动停止")
+        try env.countdown.start(task: task, workMinutes: 25, restMinutes: 5, rounds: 4)
+        #expect(env.countdown.isActive)
+
+        try env.timer.stop()
+
+        #expect(!env.countdown.isActive)
+        #expect(env.timer.phase == .idle)
+        let ended = try #require(
+            env.history.events(matching: HistoryFilter(types: [.countdownEnded])).first
+        )
+        #expect(ended.payload["reason"] == "timer-stopped")
+    }
+
+    @Test("完成当前任务：倒计时同步结束")
+    func completingTaskEndsCountdown() throws {
+        let env = try makeEnvironment()
+        let task = try env.tasks.create(title: "联动完成")
+        try env.countdown.start(task: task, workMinutes: 25, restMinutes: 5, rounds: 4)
+
+        _ = try env.timer.completeActiveTask()
+
+        #expect(!env.countdown.isActive)
+        #expect(task.isCompleted)
+        #expect(try env.history.events(matching: HistoryFilter(types: [.countdownEnded])).count == 1)
+    }
+
+    @Test("切换正计时到其他任务：旧任务的倒计时结束")
+    func switchingTaskEndsCountdown() throws {
+        let env = try makeEnvironment()
+        let taskA = try env.tasks.create(title: "任务甲")
+        let taskB = try env.tasks.create(title: "任务乙")
+        try env.countdown.start(task: taskA, workMinutes: 25, restMinutes: 5, rounds: 4)
+
+        try env.timer.start(task: taskB) // 自动停止甲的计时
+
+        #expect(env.timer.activeTaskID == taskB.id)
+        #expect(!env.countdown.isActive)
+    }
+
+    @Test("手动完成计时中的任务（TaskService.complete）：倒计时同步结束")
+    func manuallyCompletingTrackedTaskEndsCountdown() throws {
+        let env = try makeEnvironment()
+        let task = try env.tasks.create(title: "手动完成联动")
+        try env.countdown.start(task: task, workMinutes: 25, restMinutes: 5, rounds: 4)
+
+        try env.tasks.complete(task)
+
+        #expect(!env.countdown.isActive)
+        #expect(task.isCompleted)
+    }
+
+    @Test("结束倒计时：只记录一条 manual 原因的结束历史")
+    func endingCountdownRecordsSingleEnd() throws {
+        let env = try makeEnvironment()
+        let task = try env.tasks.create(title: "单条历史")
+        try env.countdown.start(task: task, workMinutes: 25, restMinutes: 5, rounds: 4)
+
+        try env.countdown.end()
+
+        let ended = try env.history.events(matching: HistoryFilter(types: [.countdownEnded]))
+        #expect(ended.count == 1)
+        #expect(ended.first?.payload["reason"] == "manual")
+        #expect(env.timer.phase == .idle)
+    }
+
+    @Test("纯倒计时自然结束：不因内部停止正计时产生重复历史")
+    func naturalEndRecordsSingleEnd() throws {
+        let env = try makeEnvironment()
+        let task = try env.tasks.create(title: "自然结束联动")
+        try env.countdown.start(task: task, workMinutes: 10, restMinutes: 0, rounds: 1)
+
+        env.clock.advance(by: 10 * 60)
+        try env.countdown.advanceIfNeeded()
+
+        let ended = try env.history.events(matching: HistoryFilter(types: [.countdownEnded]))
+        #expect(ended.count == 1)
+        #expect(ended.first?.payload["reason"] == "natural")
+    }
+}

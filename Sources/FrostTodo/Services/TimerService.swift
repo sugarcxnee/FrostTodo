@@ -24,6 +24,8 @@ public final class TimerService {
 
     /// 日历联动等外部观察者（Phase 4 接入）
     public weak var observer: (any TimerObserving)?
+    /// 倒计时协调者：正计时结束时通知倒计时同步结束
+    public weak var countdownCoordinator: (any CountdownCoordinating)?
 
     private var snapshot: TimerSnapshot
     public private(set) var currentSession: TimeSession?
@@ -275,6 +277,7 @@ public final class TimerService {
             observer?.timerDidEndSession(endedSession, task: task)
         }
         observer?.timerDidCompleteTask(task)
+        countdownCoordinator?.timerTrackingDidEnd(for: taskID)
         return task
     }
 
@@ -332,6 +335,7 @@ public final class TimerService {
         if let endedSession, let taskID, let task = try fetchTask(id: taskID) {
             observer?.timerDidEndSession(endedSession, task: task)
         }
+        countdownCoordinator?.timerTrackingDidEnd(for: taskID)
     }
 
     private func resetToIdle() {

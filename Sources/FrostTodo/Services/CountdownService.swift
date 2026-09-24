@@ -20,12 +20,14 @@ public enum CountdownError: Error, Equatable {
 /// 恢复策略：剩余时间由 targetEndAt 推导；应用关闭期间到期时恢复阶段
 /// 仅单步追赶（进入下一阶段并以当前时间重新起算），不回补多个周期。
 @MainActor
-public final class CountdownService: ObservableObject {
+public final class CountdownService: ObservableObject, CountdownCoordinating {
     private let persistence: PersistenceService
     private let timer: TimerService
     private let history: HistoryRecording
     private let clock: ClockProviding
     private var snapshot: CountdownSnapshot
+    /// 结束流程进行中标记：由自身 end 触发的 timer.stop 不再回调自身
+    private var isEnding = false
 
     public init(
         persistence: PersistenceService,
@@ -133,9 +135,17 @@ public final class CountdownService: ObservableObject {
         }
     }
 
-    /// 手动结束倒计时（随时可调用）
+    /// 手动结束倒计时（随时可调用），同时停止正计时
     public func end() throws {
-        try end(reason: "manual")
+        try end(reason: "manual", stopTimer: true)
+    }
+
+    // MARK: - CountdownCoordinating
+
+    /// 正计时已以任何方式结束：倒计时同步结束（不再操作正计时）
+    public func timerTrackingDidEnd(for taskID: UUID?) {
+        guard isActive, !isEnding else { return }
+        try? end(reason: "timer-stopped", stopTimer: false)
     }
 
     /// 推进阶段：由 UI 每秒驱动；到期则转换阶段或自然结束。幂等。
@@ -161,7 +171,7 @@ public final class CountdownService: ObservableObject {
                 }
                 if snapshot.cyclesCompleted >= snapshot.totalRounds {
                     // 最后一轮专注完成：自然结束（不再进入休息）
-                    try end(reason: "natural")
+                    try end(reason: "natural", stopTimer: true)
                     return
                 }
                 if snapshot.restSeconds > 0 {
@@ -208,14 +218,17 @@ public final class CountdownService: ObservableObject {
 
     // MARK: - 私有
 
-    private func end(reason: String) throws {
+    private func end(reason: String, stopTimer: Bool) throws {
         guard isActive else { throw CountdownError.notRunning }
         let remaining = remainingSeconds()
         let taskID = snapshot.taskID
         let cycles = snapshot.cyclesCompleted
         let prior = snapshot.captureState()
 
-        if timer.isTracking {
+        isEnding = true
+        defer { isEnding = false }
+
+        if stopTimer, timer.isTracking {
             try timer.stop()
         }
         snapshot.phaseValue = .idle
@@ -227,7 +240,7 @@ public final class CountdownService: ObservableObject {
             try history.record(HistoryEventInput(
                 type: .countdownEnded, taskID: taskID,
                 title: "结束倒计时",
-                detail: reason == "manual" ? "手动结束，剩余 \(remaining) 秒" : "倒计时自然结束",
+                detail: endDetail(reason: reason, remaining: remaining),
                 payload: [
                     "reason": reason,
                     "remainingSeconds": "\(remaining)",
@@ -241,6 +254,14 @@ public final class CountdownService: ObservableObject {
             persistence.rollback()
             snapshot.restore(prior)
             throw error
+        }
+    }
+
+    private func endDetail(reason: String, remaining: Int) -> String {
+        switch reason {
+        case "manual": return "手动结束，剩余 \(remaining) 秒"
+        case "timer-stopped": return "正计时已停止，倒计时同步结束"
+        default: return "倒计时自然结束"
         }
     }
 

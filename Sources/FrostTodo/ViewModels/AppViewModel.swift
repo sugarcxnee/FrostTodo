@@ -60,6 +60,7 @@ public final class AppViewModel: ObservableObject {
         self.countdownModel = CountdownViewModel(countdown: countdown, persistence: persistence, clock: clock)
 
         timer.observer = calendarSync
+        timer.countdownCoordinator = countdown
         tasks.timerService = timer
         calendarAccess = provider.authorizationStatus()
     }

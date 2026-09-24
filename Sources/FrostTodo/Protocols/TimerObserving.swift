@@ -12,6 +12,12 @@ public protocol TimerObserving: AnyObject {
     func timerDidCompleteTask(_ task: TodoTask)
 }
 
+/// 正计时停止协调：正计时以任何方式结束（手动停止、完成任务、切换任务、
+/// 任务被手动完成或删除）时通知倒计时同步结束，保证两者生命周期一致
+public protocol CountdownCoordinating: AnyObject {
+    func timerTrackingDidEnd(for taskID: UUID?)
+}
+
 /// 计时器错误
 public enum TimerError: Error, Equatable {
     /// 已在计时同一任务，拒绝重复开始
