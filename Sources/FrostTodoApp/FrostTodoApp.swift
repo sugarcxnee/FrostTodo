@@ -16,6 +16,7 @@ struct FrostTodoApp: App {
                     guard !isTestHost else { return }
                     await app.requestCalendarAccessIfNeeded()
                     app.refreshAll()
+                    app.startScheduleAutoRefresh()
                 }
         }
         .windowToolbarStyle(.unified(showsTitle: true))

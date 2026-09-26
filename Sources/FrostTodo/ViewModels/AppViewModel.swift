@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import AppKit
 
 /// 应用组合根：构建并接线全部服务与子 ViewModel
 @MainActor
@@ -22,6 +23,9 @@ public final class AppViewModel: ObservableObject {
 
     @Published public private(set) var calendarAccess: CalendarAccessStatus = .notDetermined
     @Published public private(set) var todaySchedule: [CalendarEventInfo] = []
+
+    private var scheduleTimer: Timer?
+    private var activationObserver: NSObjectProtocol?
 
     public init(
         persistence: PersistenceService? = nil,
@@ -89,6 +93,30 @@ public final class AppViewModel: ObservableObject {
 
     public func refreshTodaySchedule() {
         todaySchedule = provider.fetchEvents(on: Date())
+    }
+
+    /// 启动今日日程自动刷新：
+    /// - 每 5 分钟定时读取（覆盖跨午夜与日历数据变化）
+    /// - 应用重新激活时读取（覆盖事后在系统设置补授权限的场景）
+    public func startScheduleAutoRefresh() {
+        guard scheduleTimer == nil else { return }
+        refreshTodaySchedule()
+        scheduleTimer = Timer.scheduledTimer(withTimeInterval: 5 * 60, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                self?.refreshTodaySchedule()
+                self?.refreshCalendarStatus()
+            }
+        }
+        activationObserver = NotificationCenter.default.addObserver(
+            forName: NSApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.refreshTodaySchedule()
+                self?.refreshCalendarStatus()
+            }
+        }
     }
 
     /// 可写日历清单（供设置页选择）

@@ -330,3 +330,59 @@ struct Phase4CalendarServiceTests {
         #expect(events.contains { $0.isAllDay })
     }
 }
+
+// MARK: - 今日日程
+
+@MainActor
+@Suite("今日日程：刷新与自身事件过滤")
+struct TodayScheduleTests {
+
+    @Test("日程可见性：排除应用自身的计时事件，保留外部事件")
+    func scheduleVisibilityFiltersTrackingEvents() {
+        let taskID = UUID()
+        let external = CalendarEventInfo(
+            id: "E1", title: "晨会", startDate: Date(), endDate: Date(),
+            isAllDay: false, notes: nil, url: URL(string: "https://example.com/x")
+        )
+        let noURL = CalendarEventInfo(
+            id: "E2", title: "无链接事件", startDate: Date(), endDate: Date(),
+            isAllDay: false, notes: nil, url: nil
+        )
+        let tracking = CalendarEventInfo(
+            id: "E3", title: "[计时中] 写报告", startDate: Date(), endDate: Date(),
+            isAllDay: false, notes: nil, url: TaskLink.url(for: taskID)
+        )
+        #expect(EventKitCalendarProvider.isScheduleVisible(external))
+        #expect(EventKitCalendarProvider.isScheduleVisible(noURL))
+        #expect(!EventKitCalendarProvider.isScheduleVisible(tracking))
+    }
+
+    @Test("refreshTodaySchedule 每次调用都读取最新数据（无缓存）")
+    func refreshTodayScheduleReadsLatest() throws {
+        let clock = ManualClock(Date(timeIntervalSince1970: 1_700_000_000))
+        let persistence = try PersistenceService(inMemory: true)
+        let provider = MockCalendarProvider()
+        let app = try AppViewModel(
+            persistence: persistence,
+            provider: provider,
+            notificationCenter: MockNotificationCenter(),
+            clock: clock
+        )
+
+        let now = Date()
+        provider.todayEvents = [
+            CalendarEventInfo(id: "A", title: "上午日程", startDate: now, endDate: now.addingTimeInterval(600), isAllDay: false, notes: nil, url: nil),
+        ]
+        app.refreshTodaySchedule()
+        #expect(app.todaySchedule.map(\.title) == ["上午日程"])
+
+        // 日历数据变化后再次刷新应得到新结果
+        clock.advance(by: 3_600)
+        provider.todayEvents = [
+            CalendarEventInfo(id: "B", title: "下午日程", startDate: clock.now, endDate: clock.now.addingTimeInterval(600), isAllDay: false, notes: nil, url: nil),
+            CalendarEventInfo(id: "C", title: "全天日程", startDate: clock.now, endDate: clock.now, isAllDay: true, notes: nil, url: nil),
+        ]
+        app.refreshTodaySchedule()
+        #expect(app.todaySchedule.map(\.title) == ["下午日程", "全天日程"])
+    }
+}

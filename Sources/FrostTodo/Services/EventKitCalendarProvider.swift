@@ -138,5 +138,12 @@ public final class EventKitCalendarProvider: CalendarProviding {
                 url: event.url
             )
         }
+        .filter(Self.isScheduleVisible(_:))
+    }
+
+    /// 今日日程只展示外部日程：应用自身写入的计时事件（frosttodo 链接）不参与
+    public static func isScheduleVisible(_ info: CalendarEventInfo) -> Bool {
+        guard let url = info.url else { return true }
+        return TaskLink.taskID(from: url) == nil
     }
 }
