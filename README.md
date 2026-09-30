@@ -12,6 +12,7 @@
 - 测试框架：Swift Testing（全项目统一）
 - 语言模式：Swift 5 模式（工具链 6.0），核心服务标注 @MainActor
 - App Sandbox 已启用，带日历访问 entitlement
+- 应用图标：冰蓝渐变 squircle，白色表盘环与 12 点计时圆点托起对勾，一件图形同时表达待办、计时与冰霜（AppKit 脚本渲染，源尺寸 1024）
 
 ## 功能概览
 

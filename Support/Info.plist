@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleName</key>
 	<string>FrostTodo</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
 	<key>CFBundleDisplayName</key>
 	<string>FrostTodo</string>
 	<key>CFBundleExecutable</key>

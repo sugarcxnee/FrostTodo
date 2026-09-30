@@ -16,6 +16,7 @@ targets:
     sources:
       - Sources/FrostTodo
       - Sources/FrostTodoApp
+      - path: Support/AppIcon.icns
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.frosttodo.app

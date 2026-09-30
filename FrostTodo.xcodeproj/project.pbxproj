@@ -51,6 +51,7 @@
 		C11E9A1652D9B264BD51D03D /* CalendarSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13952C96218CCA5147433D4 /* CalendarSyncService.swift */; };
 		CA8E1CB6D9628F41AC8D4DFA /* Phase4CalendarServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEA021EF87469627F2FAFA /* Phase4CalendarServiceTests.swift */; };
 		CB6622A8803E5475C2913724 /* Phase1PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A8259A25C3B4A35AAA1EE /* Phase1PersistenceTests.swift */; };
+		CBF613AEE88D5897F61955E1 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6AE50431EB14F948FD528486 /* AppIcon.icns */; };
 		D28F0D569553B570C08C9691 /* TaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1AFD961660909B185A8483 /* TaskService.swift */; };
 		D4D590277198B709E8E5B23B /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2731843AF2548FDD6A42D407 /* HistoryViewModel.swift */; };
 		D523AC3AF3776FCC1DA06A60 /* EventKitCalendarProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0D7EA723BE2E6F885474E5 /* EventKitCalendarProvider.swift */; };
@@ -96,6 +97,7 @@
 		6143DED1C7274DEC5C66CE1B /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		61CA51816FEFA0F940C613F4 /* TimerSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSnapshot.swift; sourceTree = "<group>"; };
 		63E52916ABCC39832FEA15B4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		6AE50431EB14F948FD528486 /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AppIcon.icns; sourceTree = "<group>"; };
 		6B0D4F696DA20FBFD084867B /* TimeSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSession.swift; sourceTree = "<group>"; };
 		728921E438BFF8A79AFAEE16 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		746CD919FC096D4719956721 /* Phase1SettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase1SettingsTests.swift; sourceTree = "<group>"; };
@@ -131,6 +133,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		1791A407A76865C15E58A57E /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				6AE50431EB14F948FD528486 /* AppIcon.icns */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
 		1C0E342C937AF910305001DC /* FrostTodo */ = {
 			isa = PBXGroup;
 			children = (
@@ -219,6 +229,7 @@
 			isa = PBXGroup;
 			children = (
 				7E4A61E70901C8722904529C /* Sources */,
+				1791A407A76865C15E58A57E /* Support */,
 				B41965F2A95B6F49555A3C5F /* Tests */,
 				9D0F4E1E351B7E149A36E6B8 /* Products */,
 			);
@@ -314,6 +325,7 @@
 			buildConfigurationList = 61DDD7FF8BF50069F41CD4D0 /* Build configuration list for PBXNativeTarget "FrostTodo" */;
 			buildPhases = (
 				9B493009C418AEDBEFE0D192 /* Sources */,
+				28A1221486AE81AC72E14084 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -356,6 +368,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		28A1221486AE81AC72E14084 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CBF613AEE88D5897F61955E1 /* AppIcon.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		9B493009C418AEDBEFE0D192 /* Sources */ = {
