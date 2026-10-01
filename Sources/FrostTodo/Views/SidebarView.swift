@@ -106,7 +106,9 @@ public struct SidebarView: View {
                 }
             }
             .listStyle(.sidebar)
+            .scrollContentBackground(.hidden)
         }
+        .background(.ultraThinMaterial)
         .navigationSplitViewColumnWidth(min: 180, ideal: 220)
     }
 }
@@ -162,11 +164,7 @@ struct CountdownPanelCard: View {
             }
         }
         .padding(10)
-        .background(FrostTheme.card, in: RoundedRectangle(cornerRadius: 10))
-        .overlay(
-            RoundedRectangle(cornerRadius: 10)
-                .strokeBorder(FrostTheme.separator)
-        )
+        .background(FrostTheme.card.opacity(0.55), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         .onReceive(ticker) { _ in
             model.refresh()
         }
@@ -200,11 +198,7 @@ struct CountUpPanelCard: View {
                 .foregroundStyle(FrostTheme.secondaryText)
         }
         .padding(10)
-        .background(FrostTheme.card, in: RoundedRectangle(cornerRadius: 10))
-        .overlay(
-            RoundedRectangle(cornerRadius: 10)
-                .strokeBorder(FrostTheme.separator)
-        )
+        .background(FrostTheme.card.opacity(0.55), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         .onReceive(ticker) { _ in
             model.refresh()
         }
